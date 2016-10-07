@@ -12,12 +12,12 @@ namespace Workshop2_App
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello User. This is the registry:");
 
             //Creating the controller
             Controller controller = new Controller();
 
-            controller.getInfoFromFile();
+            //Getting the view
+            controller.showView();
         }
 
        

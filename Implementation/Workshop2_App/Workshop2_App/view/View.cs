@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Workshop2_App.model;
 
 namespace Workshop2_App.view
 {
@@ -26,6 +27,11 @@ namespace Workshop2_App.view
         public void viewListAllCompact()
         {
             Console.WriteLine("\nYou've chosen to view all members in a compact list.");
+
+            //Getting the boatlist from BoatList class
+            BoatList boatList = new BoatList();
+
+            boatList.getBoatsFromDb();
         }
 
         public void viewListAllVerbose()

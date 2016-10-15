@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="controller\Controller.cs" />
     <Compile Include="model\Boat.cs" />
+    <Compile Include="model\BoatList.cs" />
     <Compile Include="model\Member.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

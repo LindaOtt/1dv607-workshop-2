@@ -1,6 +1,5 @@
 C:\Users\Fam\Google Drive\Webbprogrammerare\1DV607 Objektorienterad analys och design med UML\Workshop II\Implementation\Workshop2_App\Workshop2_App\bin\Debug\Workshop2_App.exe.config
 C:\Users\Fam\Google Drive\Webbprogrammerare\1DV607 Objektorienterad analys och design med UML\Workshop II\Implementation\Workshop2_App\Workshop2_App\bin\Debug\Workshop2_App.exe
 C:\Users\Fam\Google Drive\Webbprogrammerare\1DV607 Objektorienterad analys och design med UML\Workshop II\Implementation\Workshop2_App\Workshop2_App\bin\Debug\Workshop2_App.pdb
-C:\Users\Fam\Google Drive\Webbprogrammerare\1DV607 Objektorienterad analys och design med UML\Workshop II\Implementation\Workshop2_App\Workshop2_App\obj\Debug\Workshop2_App.csprojResolveAssemblyReference.cache
 C:\Users\Fam\Google Drive\Webbprogrammerare\1DV607 Objektorienterad analys och design med UML\Workshop II\Implementation\Workshop2_App\Workshop2_App\obj\Debug\Workshop2_App.exe
 C:\Users\Fam\Google Drive\Webbprogrammerare\1DV607 Objektorienterad analys och design med UML\Workshop II\Implementation\Workshop2_App\Workshop2_App\obj\Debug\Workshop2_App.pdb

@@ -25,42 +25,47 @@ namespace Workshop2_App.view
 
         public void viewListAllCompact()
         {
-            Console.WriteLine("You've chosen to view all members in a compact list.");
+            Console.WriteLine("\nYou've chosen to view all members in a compact list.");
         }
 
         public void viewListAllVerbose()
         {
-            Console.WriteLine("You've chosen to view all members in a verbose list.");
+            Console.WriteLine("\nYou've chosen to view all members in a verbose list.");
         }
 
         public void viewCreateNewMember()
         {
-            Console.WriteLine("You've chosen to create a new member.");
+            Console.WriteLine("\nYou've chosen to create a new member.");
         }
 
         public void viewChangeMember()
         {
-            Console.WriteLine("You've chosen to change a member");
+            Console.WriteLine("\nYou've chosen to change a member");
         }
 
         public void viewLookAtMember()
         {
-            Console.WriteLine("You've chosen to look at a member");
+            Console.WriteLine("\nYou've chosen to look at a member");
         }
 
         public void viewRegisterNewBoat()
         {
-            Console.WriteLine("You've chosen to register a new boat");
+            Console.WriteLine("\nYou've chosen to register a new boat");
         }
 
         public void viewDeleteBoat()
         {
-            Console.WriteLine("You've chosen to delete a boat");
+            Console.WriteLine("\nYou've chosen to delete a boat");
         }
 
         public void viewChangeBoat()
         {
-            Console.WriteLine("You've chosen to change a boat");
+            Console.WriteLine("\nYou've chosen to change a boat");
+        }
+
+        public void viewWrongInput()
+        {
+            Console.WriteLine("\nYou've entered an option that doesn't exist. Please try again.");
         }
     }
 }

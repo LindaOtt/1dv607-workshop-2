@@ -43,7 +43,7 @@ namespace Workshop2_App.view
             {
                 boats = member.MemberBoats;
                 numberOfBoats = boats.Count;
-                Console.WriteLine("\nMember name: {0} \nMember id: {1} \nNumber of boats: {2}", member.Name, member.UniqueId, numberOfBoats);
+                Console.WriteLine("---------------------------------------------------------\nMember name: {0} \nMember id: {1} \nNumber of boats: {2}", member.Name, member.UniqueId, numberOfBoats);
             }
         }
 
@@ -52,8 +52,7 @@ namespace Workshop2_App.view
             Console.WriteLine("\nYou've chosen to view all members in a verbose list.");
 
             members = memberList.getMemberList();
-
-            
+          
 
             //Writing out the members 
             foreach (Member member in members)
@@ -74,9 +73,21 @@ namespace Workshop2_App.view
             Console.WriteLine("\nYou've chosen to create a new member.");
         }
 
-        public void viewChangeMember()
+        public void viewChangeMemberPick()
         {
             Console.WriteLine("\nYou've chosen to change a member");
+            Console.WriteLine("Enter the number of the member you want to change:");
+
+            members = memberList.getMemberList();
+
+            int counter = 1;
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                Console.WriteLine("---------------------------------------------------------\n{0}. Name: {1} \nPersonal number: {2}", counter, member.Name, member.PersonalNumber);
+                counter++;
+            }
         }
 
         public void viewLookAtMember()

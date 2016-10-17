@@ -17,13 +17,18 @@ namespace Workshop2_App.controller
             ListAllCompact,
             ListAllVerbose,
             CreateNewMember,
-            ChangeMember,
+            ChangeMemberPick,
+            ChangeMemberEnterData,
             LookAtMember,
             RegisterNewBoat,
             DeleteBoat,
             ChangeBoat,
             WrongInput
         };
+
+        private int changeMemberId;
+
+        private int changeBoatId;
 
         public views currentView = views.showFirstView;
 
@@ -38,11 +43,66 @@ namespace Workshop2_App.controller
             view.viewStart();
 
             string userFeedback;
+            int number;
 
             do {
 
                 userFeedback = (Console.ReadLine()).ToUpper();
+                
 
+                if (userFeedback == "A")
+                {
+                    currentView = views.ListAllCompact;
+                }
+                else if (userFeedback == "B")
+                {
+                    currentView = views.ListAllVerbose;
+                }
+                else if (userFeedback == "C")
+                {
+                    currentView = views.CreateNewMember;
+                }
+                else if (userFeedback == "D")
+                {
+                    currentView = views.ChangeMemberPick;
+                }
+                else if (userFeedback == "E")
+                {
+                    currentView = views.LookAtMember;
+                }
+                else if (userFeedback == "F")
+                {
+                    currentView = views.RegisterNewBoat;
+                }
+                else if (userFeedback == "G")
+                {
+                    currentView = views.DeleteBoat;
+                }
+                else if (userFeedback == "H")
+                {
+                    currentView = views.ChangeBoat;
+                }
+                else if (userFeedback == "0")
+                {
+                    currentView = views.showFirstView;
+                }
+                else if (Int32.TryParse(userFeedback, out number))
+                {
+                    if(number > 0)
+                    {
+                        currentView = views.ChangeMemberEnterData;
+                    }
+                    else
+                    {
+                        currentView = views.showFirstView;
+                    }
+                }
+                else
+                {
+                    currentView = views.showFirstView;
+                }
+
+                /*
                 switch (userFeedback)
                 {
                     case "A":
@@ -73,15 +133,44 @@ namespace Workshop2_App.controller
                         currentView = views.showFirstView;
                         break;
                     default:
-                        currentView = views.WrongInput;
+                        //If the user entered a number higher than 0
+                        if (checkInput(userFeedback))
+                        {
+                            currentView = views.
+                        }
+                        else { 
+                            currentView = views.WrongInput;
+                        }
                         break;
+                        }
+
                 }
+                */
 
                 activateView();
                 
             } while (userFeedback != "0");
 
         }
+
+        /*
+        public bool checkInput(string userFeedback)
+        {
+            int number;
+            bool isValidInt = false;
+
+            bool isInt = Int32.TryParse(userFeedback, out number);
+            if (isInt)
+            {
+                int userFeedbackInt = Int32.Parse(userFeedback);
+                if (userFeedbackInt > 0) { 
+                    isValidInt = true;
+                    return isValidInt;
+                }
+            }
+            return isValidInt;
+        }
+        */
 
         public void getInfoFromFile()
         {
@@ -121,8 +210,8 @@ namespace Workshop2_App.controller
                 case views.CreateNewMember:
                     view.viewCreateNewMember();
                     break;
-                case views.ChangeMember:
-                    view.viewChangeMember();
+                case views.ChangeMemberPick:
+                    view.viewChangeMemberPick();
                     break;
                 case views.LookAtMember:
                     view.viewLookAtMember();

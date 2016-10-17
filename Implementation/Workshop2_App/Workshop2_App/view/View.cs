@@ -13,6 +13,9 @@ namespace Workshop2_App.view
         private List<Boat> boats = new List<Boat>();
         private int numberOfBoats;
 
+        //Getting the memberlist from MemberList class
+        MemberList memberList = new MemberList();
+
         public void viewStart()
         {
             Console.Clear();
@@ -33,9 +36,6 @@ namespace Workshop2_App.view
             
             Console.WriteLine("\nYou\'ve chosen to view all members in a compact list.");
 
-            //Getting the memberlist from MemberList class
-            MemberList memberList = new MemberList();
-
             members = memberList.getMemberList();
 
             //Writing out the members 
@@ -50,6 +50,23 @@ namespace Workshop2_App.view
         public void viewListAllVerbose()
         {
             Console.WriteLine("\nYou've chosen to view all members in a verbose list.");
+
+            members = memberList.getMemberList();
+
+            
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                boats = member.MemberBoats;
+                int counter = 1;
+                Console.WriteLine("---------------------------------------------------------\nName: {0} \nPersonal number: {1} \nMember Id: {2}", member.Name, member.PersonalNumber, member.UniqueId);
+                foreach (Boat boat in boats)
+                {
+                    Console.WriteLine("\nBOAT {0}: \nBoat type: {1} \nBoat length: {2}", counter, boat.Type, boat.Length);
+                    counter++;
+                }
+            }
         }
 
         public void viewCreateNewMember()

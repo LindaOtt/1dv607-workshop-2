@@ -10,6 +10,8 @@ namespace Workshop2_App.view
     class View
     {
         private List<Member> members = new List<Member>();
+        private List<Boat> boats = new List<Boat>();
+        private int numberOfBoats;
 
         public void viewStart()
         {
@@ -39,7 +41,9 @@ namespace Workshop2_App.view
             //Writing out the members 
             foreach (Member member in members)
             {
-                Console.WriteLine("\nMember name: {0}, Personal number: {1}, UniqueId: {2}", member.Name, member.PersonalNumber, member.UniqueId);
+                boats = member.MemberBoats;
+                numberOfBoats = boats.Count;
+                Console.WriteLine("\nMember name: {0} \nMember id: {1} \nNumber of boats: {2}", member.Name, member.UniqueId, numberOfBoats);
             }
         }
 

@@ -12,6 +12,9 @@ namespace Workshop2_App.model
         //List to store the members in
         private List<Member> members = new List<Member>();
 
+        //List to store the boats for the member in
+        private List<Boat> memberBoats = new List<Boat>();
+
         public MemberList()
         {
             getMembersFromDb();
@@ -27,7 +30,6 @@ namespace Workshop2_App.model
                 new System.IO.StreamReader(@"..\..\\data\\registry.txt");
             while ((line = file.ReadLine()) != null)
             {
-                //System.Console.WriteLine(line);
                 //Getting the "Members" part
                 if (line == "#Members")
                 {
@@ -42,10 +44,10 @@ namespace Workshop2_App.model
                 {
                     if (membersFound)
                     {
-                        //Creating a new Member and adding it to the list
+                        //Creating a new Member
                         Member member = new Member();
 
-                        //Getting the name of the member
+                        //Getting the properties of the member from the database (text file)
                         string[] stringSeparators = new string[] { ", " };
                         string[] result;
 
@@ -54,7 +56,6 @@ namespace Workshop2_App.model
                         int counter = 1;
                         foreach (string s in result)
                         {
-                            //Console.Write("'{0}' ", String.IsNullOrEmpty(s) ? "<>" : s);
 
                             if (counter == 1)
                             {
@@ -73,6 +74,11 @@ namespace Workshop2_App.model
                             }
                             counter++;
                         }
+
+                        //Adding the boatlist to the member
+                        BoatList boatList = new BoatList(member.UniqueId);
+                        memberBoats = boatList.getBoatList();
+                        member.MemberBoats = memberBoats;
 
                         //Adding the member to the list
                         members.Add(member);

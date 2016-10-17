@@ -11,6 +11,7 @@ namespace Workshop2_App.model
         private string name;
         private string personalNumber;
         private string uniqueId;
+        private List<Boat> memberBoats;
 
         public string Name
         {
@@ -46,6 +47,24 @@ namespace Workshop2_App.model
             {
                 uniqueId = value;
             }
+        }
+
+        public List<Boat> MemberBoats
+        {
+            get
+            {
+                return memberBoats;
+            }
+            set
+            {
+                memberBoats = value;
+            }
+        }
+
+
+        public List<Boat> getMemberBoats()
+        {
+            return memberBoats;
         }
     }
 }

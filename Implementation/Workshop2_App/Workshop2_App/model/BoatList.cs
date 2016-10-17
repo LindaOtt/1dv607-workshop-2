@@ -12,59 +12,82 @@ namespace Workshop2_App.model
         //List to store the boats in
         private List<Boat> boats = new List<Boat>();
 
+        //Member Id to retrieve boats for
+        private string uniqueId;
+
+        //Creates the boat list for the member
+        public BoatList(string memberId)
+        {
+            uniqueId = memberId;
+            getBoatsFromDb();
+        }
+
 
         //Gets the boats from the text file and puts them into the boat list
         public void getBoatsFromDb()
         {
+            
             //Read the text file
             string line;
-            Boolean boatsFound = false;
+            bool boatsFound = false;
             System.IO.StreamReader file =
                 new System.IO.StreamReader(@"..\..\\data\\registry.txt");
             while ((line = file.ReadLine()) != null)
             {
-                //System.Console.WriteLine(line);
+                
                 //Getting the "Members" part
-                if (line=="#Members")
+                if (line=="#Boats")
                 {
                     boatsFound = true;
                 }
-                else if (line=="#")
+                else if (line=="##")
                 {
                     boatsFound = false;
                     break;
                 }
                 else
                 {
-                    if (boatsFound)
+                    if (boatsFound == true)
                     {
-                        //Creating a new Member and adding it to the list
+                        //Creating a new Boat 
                         Boat boat = new Boat();
 
-                        //Getting the name of the member
+                        //Getting the data of the boat
                         string[] stringSeparators = new string[] { ", " };
                         string[] result;
 
                         result = line.Split(stringSeparators, StringSplitOptions.None);
 
                         int counter = 1;
+                        bool belongsToMember = false;
                         foreach (string s in result)
                         {
-
-                            if (counter == 1) { 
-                                //Adding the type to the boat
-                                //boat.Type = s;
+                            /** Checking to see if the member id of the boat
+                            ¨   corresponds to the uniqueId
+                            **/
+                            if (counter == 1)
+                            {
+                                if (s == uniqueId)
+                                {
+                                    belongsToMember = true;
+                                }
                             }
-                            else if (counter == 2)
+                            if (counter == 2 && belongsToMember) { 
+                                //Adding the type to the boat
+                                boat.Type = (Boat.type) Enum.Parse(typeof(Boat.type), s);
+                            }
+                            else if (counter == 3 && belongsToMember)
                             {
                                 //Adding the length to the boat
-                                //boat.Length = s;
+                                boat.Length = s;
                             }
                             counter++;
                         }
 
                         //Adding the member to the list
-                        boats.Add(boat);
+                        if (belongsToMember) { 
+                            boats.Add(boat);
+                        }
                     }
                 }
             }

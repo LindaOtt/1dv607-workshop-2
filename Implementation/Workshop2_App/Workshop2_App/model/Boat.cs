@@ -16,7 +16,7 @@ namespace Workshop2_App.model
             Other
         };
 
-        private int length;
+        private string length;
 
         public type Type
         {
@@ -24,7 +24,7 @@ namespace Workshop2_App.model
             set;
         }
 
-        public int Length
+        public string Length
         {
             get
             {

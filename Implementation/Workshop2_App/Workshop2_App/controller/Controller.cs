@@ -18,15 +18,25 @@ namespace Workshop2_App.controller
             ListAllVerbose,
             CreateNewMember,
             ChangeMemberPick,
-            ChangeMemberEnterData,
+            ChangeMemberEnterName,
+            ChangeMemberEnterPNumber,
+            ChangeMemberSaved,
             LookAtMember,
             RegisterNewBoat,
             DeleteBoat,
             ChangeBoat,
+            ChangeBoatEnterType,
+            ChangeBoatEnterLength,
             WrongInput
         };
 
+        private bool changeMemberEnterName = false;
+        private bool changeMemberEnterPNumber = false;
+        private bool changeMemberSaved = false;
+
         private int changeMemberId;
+
+        private bool changeBoat = false;
 
         private int changeBoatId;
 
@@ -49,103 +59,84 @@ namespace Workshop2_App.controller
 
                 userFeedback = (Console.ReadLine()).ToUpper();
                 
-
-                if (userFeedback == "A")
+                //Check if we are currently changing a member 
+                if (changeMemberEnterName)
                 {
-                    currentView = views.ListAllCompact;
-                }
-                else if (userFeedback == "B")
-                {
-                    currentView = views.ListAllVerbose;
-                }
-                else if (userFeedback == "C")
-                {
-                    currentView = views.CreateNewMember;
-                }
-                else if (userFeedback == "D")
-                {
-                    currentView = views.ChangeMemberPick;
-                }
-                else if (userFeedback == "E")
-                {
-                    currentView = views.LookAtMember;
-                }
-                else if (userFeedback == "F")
-                {
-                    currentView = views.RegisterNewBoat;
-                }
-                else if (userFeedback == "G")
-                {
-                    currentView = views.DeleteBoat;
-                }
-                else if (userFeedback == "H")
-                {
-                    currentView = views.ChangeBoat;
-                }
-                else if (userFeedback == "0")
-                {
-                    currentView = views.showFirstView;
-                }
-                else if (Int32.TryParse(userFeedback, out number))
-                {
-                    if(number > 0)
+                    if (Int32.TryParse(userFeedback, out number))
                     {
-                        currentView = views.ChangeMemberEnterData;
+                        if (number > 0)
+                        {
+                            currentView = views.ChangeMemberEnterName;
+                            changeMemberId = number;
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
                     }
+                    changeMemberEnterName = false;
+                    changeMemberEnterPNumber = true;
+                }
+
+                else if (changeMemberEnterPNumber)
+                {
+                    currentView = views.ChangeMemberEnterPNumber;
+                    changeMemberEnterPNumber = false;
+                    changeMemberSaved = true;
+                }
+
+                else if (changeMemberSaved)
+                {
+                    currentView = views.ChangeMemberSaved;
+                    changeMemberSaved = false;
+                }
+
+                //We are not changing a member or a boat,
+                //show the regular menu options
+                else { 
+                    if (userFeedback == "A")
+                    {
+                        currentView = views.ListAllCompact;
+                    }
+                    else if (userFeedback == "B")
+                    {
+                        currentView = views.ListAllVerbose;
+                    }
+                    else if (userFeedback == "C")
+                    {
+                        currentView = views.CreateNewMember;
+                    }
+                    else if (userFeedback == "D")
+                    {
+                        currentView = views.ChangeMemberPick;
+                        changeMemberEnterName = true;
+                    }
+                    else if (userFeedback == "E")
+                    {
+                        currentView = views.LookAtMember;
+                    }
+                    else if (userFeedback == "F")
+                    {
+                        currentView = views.RegisterNewBoat;
+                    }
+                    else if (userFeedback == "G")
+                    {
+                        currentView = views.DeleteBoat;
+                    }
+                    else if (userFeedback == "H")
+                    {
+                        currentView = views.ChangeBoat;
+                    }
+                    else if (userFeedback == "0")
+                    {
+                        currentView = views.showFirstView;
+                    }
+               
                     else
                     {
                         currentView = views.showFirstView;
                     }
                 }
-                else
-                {
-                    currentView = views.showFirstView;
-                }
-
-                /*
-                switch (userFeedback)
-                {
-                    case "A":
-                        currentView = views.ListAllCompact;
-                        break;
-                    case "B":
-                        currentView = views.ListAllVerbose;
-                        break;
-                    case "C":
-                        currentView = views.CreateNewMember;
-                        break;
-                    case "D":
-                        currentView = views.ChangeMember;
-                        break;
-                    case "E":
-                        currentView = views.LookAtMember;
-                        break;
-                    case "F":
-                        currentView = views.RegisterNewBoat;
-                        break;
-                    case "G":
-                        currentView = views.DeleteBoat;
-                        break;
-                    case "H":
-                        currentView = views.ChangeBoat;
-                        break;
-                    case "0":
-                        currentView = views.showFirstView;
-                        break;
-                    default:
-                        //If the user entered a number higher than 0
-                        if (checkInput(userFeedback))
-                        {
-                            currentView = views.
-                        }
-                        else { 
-                            currentView = views.WrongInput;
-                        }
-                        break;
-                        }
-
-                }
-                */
 
                 activateView();
                 
@@ -153,24 +144,6 @@ namespace Workshop2_App.controller
 
         }
 
-        /*
-        public bool checkInput(string userFeedback)
-        {
-            int number;
-            bool isValidInt = false;
-
-            bool isInt = Int32.TryParse(userFeedback, out number);
-            if (isInt)
-            {
-                int userFeedbackInt = Int32.Parse(userFeedback);
-                if (userFeedbackInt > 0) { 
-                    isValidInt = true;
-                    return isValidInt;
-                }
-            }
-            return isValidInt;
-        }
-        */
 
         public void getInfoFromFile()
         {
@@ -213,6 +186,15 @@ namespace Workshop2_App.controller
                 case views.ChangeMemberPick:
                     view.viewChangeMemberPick();
                     break;
+                case views.ChangeMemberEnterName:
+                    view.viewChangeMemberEnterName(changeMemberId);
+                    break;
+                case views.ChangeMemberEnterPNumber:
+                    view.viewChangeMemberEnterPNumber(changeMemberId);
+                    break;
+                case views.ChangeMemberSaved:
+                    view.viewChangeMemberSaved(changeMemberId);
+                    break;
                 case views.LookAtMember:
                     view.viewLookAtMember();
                     break;
@@ -231,55 +213,6 @@ namespace Workshop2_App.controller
                 default:
                     break;
             }
-
-            /*
-            //Checking to see which view should be shown
-            switch (currentView)
-            {
-                case views.showFirstView:
-                    view.viewStart();
-                    break;
-                case views.ListAllCompact:
-                    view.viewStart();
-                    view.viewListAllCompact();
-                    break;
-                case views.ListAllVerbose:
-                    view.viewStart();
-                    view.viewListAllVerbose();
-                    break;
-                case views.CreateNewMember:
-                    view.viewStart();
-                    view.viewCreateNewMember();
-                    break;
-                case views.ChangeMember:
-                    view.viewStart();
-                    view.viewChangeMember();
-                    break;
-                case views.LookAtMember:
-                    view.viewStart();
-                    view.viewLookAtMember();
-                    break;
-                case views.RegisterNewBoat:
-                    view.viewStart();
-                    view.viewRegisterNewBoat();
-                    break;
-                case views.DeleteBoat:
-                    view.viewStart();
-                    view.viewDeleteBoat();
-                    break;
-                case views.ChangeBoat:
-                    view.viewStart();
-                    view.viewChangeBoat();
-                    break;
-                case views.WrongInput:
-                    view.viewStart();
-                    view.viewWrongInput();
-                    break;
-                default:
-                    view.viewStart();
-                    break;
-            }
-            */
 
         }
 

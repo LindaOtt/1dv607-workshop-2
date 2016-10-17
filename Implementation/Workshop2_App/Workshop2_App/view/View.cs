@@ -90,6 +90,59 @@ namespace Workshop2_App.view
             }
         }
 
+        public void viewChangeMemberEnterName(int memberId)
+        {
+            Console.WriteLine("\nYou have chosen to change the member with unique id ");
+
+            members = memberList.getMemberList();
+
+            int counter = 1;
+            foreach (Member member in members)
+            {
+                if(counter == memberId)
+                {
+                    Console.WriteLine("{0}, {1}", member.UniqueId, member.Name);
+                    Console.WriteLine("\nEnter the new name for the member: ");
+                }
+                counter++;
+            }
+        }
+
+        public void viewChangeMemberEnterPNumber(int memberId)
+        {
+            Console.WriteLine("\nYou have chosen to change the member with unique id ");
+
+            members = memberList.getMemberList();
+
+            int counter = 1;
+            foreach (Member member in members)
+            {
+                if (counter == memberId)
+                {
+                    Console.WriteLine("{0}, {1}", member.UniqueId, member.Name);
+                    Console.WriteLine("\nEnter the new personal number for the member: ");
+                }
+                counter++;
+            }
+        }
+
+        public void viewChangeMemberSaved(int memberId)
+        {
+            Console.WriteLine("\nYou have saved the member ");
+
+            members = memberList.getMemberList();
+
+            int counter = 1;
+            foreach (Member member in members)
+            {
+                if (counter == memberId)
+                {
+                    Console.WriteLine("{0}, {1}", member.UniqueId, member.Name);
+                }
+                counter++;
+            }
+        }
+
         public void viewLookAtMember()
         {
             Console.WriteLine("\nYou've chosen to look at a member");
@@ -114,5 +167,26 @@ namespace Workshop2_App.view
         {
             Console.WriteLine("\nYou've entered an option that doesn't exist. Please try again.");
         }
+
+        /*
+        public string getUniqueId(int memberNumber)
+        {
+            string uniqueId="";
+            members = memberList.getMemberList();
+
+            int counter = 1;
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                if (counter == memberNumber)
+                {
+                    uniqueId = member.UniqueId;
+                }
+                counter++;
+            }
+            return uniqueId;
+        }
+        */
     }
 }

@@ -69,6 +69,9 @@ namespace Workshop2_App.controller
                     case "H":
                         currentView = views.ChangeBoat;
                         break;
+                    case "0":
+                        currentView = views.showFirstView;
+                        break;
                     default:
                         currentView = views.WrongInput;
                         break;

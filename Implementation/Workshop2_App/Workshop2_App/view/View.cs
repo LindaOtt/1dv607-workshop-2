@@ -9,6 +9,8 @@ namespace Workshop2_App.view
 {
     class View
     {
+        private List<Member> members = new List<Member>();
+
         public void viewStart()
         {
             Console.Clear();
@@ -26,12 +28,19 @@ namespace Workshop2_App.view
 
         public void viewListAllCompact()
         {
-            Console.WriteLine("\nYou've chosen to view all members in a compact list.");
+            
+            Console.WriteLine("\nYou\'ve chosen to view all members in a compact list.");
 
-            //Getting the boatlist from BoatList class
-            BoatList boatList = new BoatList();
+            //Getting the memberlist from MemberList class
+            MemberList memberList = new MemberList();
 
-            boatList.getBoatsFromDb();
+            members = memberList.getMemberList();
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                Console.WriteLine("\nMember name: {0}, Personal number: {1}, UniqueId: {2}", member.Name, member.PersonalNumber, member.UniqueId);
+            }
         }
 
         public void viewListAllVerbose()

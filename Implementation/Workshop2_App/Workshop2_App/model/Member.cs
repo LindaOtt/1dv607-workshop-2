@@ -9,7 +9,7 @@ namespace Workshop2_App.model
     class Member
     {
         private string name;
-        private int personalNumber;
+        private string personalNumber;
         private string uniqueId;
 
         public string Name
@@ -24,7 +24,7 @@ namespace Workshop2_App.model
             }
         }
 
-        public int PersonalNumber
+        public string PersonalNumber
         {
             get
             {

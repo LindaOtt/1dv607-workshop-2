@@ -6,40 +6,44 @@ using System.Threading.Tasks;
 
 namespace Workshop2_App.model
 {
-    
-    class BoatList
+    class MemberList
     {
-        //List to store the boats in
-        private List<Boat> boats = new List<Boat>();
 
+        //List to store the members in
+        private List<Member> members = new List<Member>();
 
-        //Gets the boats from the text file and puts them into the boat list
-        public void getBoatsFromDb()
+        public MemberList()
+        {
+            getMembersFromDb();
+        }
+
+        //Gets the members from the text file and puts them into the member list
+        public void getMembersFromDb()
         {
             //Read the text file
             string line;
-            Boolean boatsFound = false;
+            Boolean membersFound = false;
             System.IO.StreamReader file =
                 new System.IO.StreamReader(@"..\..\\data\\registry.txt");
             while ((line = file.ReadLine()) != null)
             {
                 //System.Console.WriteLine(line);
                 //Getting the "Members" part
-                if (line=="#Members")
+                if (line == "#Members")
                 {
-                    boatsFound = true;
+                    membersFound = true;
                 }
-                else if (line=="#")
+                else if (line == "#")
                 {
-                    boatsFound = false;
+                    membersFound = false;
                     break;
                 }
                 else
                 {
-                    if (boatsFound)
+                    if (membersFound)
                     {
                         //Creating a new Member and adding it to the list
-                        Boat boat = new Boat();
+                        Member member = new Member();
 
                         //Getting the name of the member
                         string[] stringSeparators = new string[] { ", " };
@@ -50,21 +54,28 @@ namespace Workshop2_App.model
                         int counter = 1;
                         foreach (string s in result)
                         {
+                            //Console.Write("'{0}' ", String.IsNullOrEmpty(s) ? "<>" : s);
 
-                            if (counter == 1) { 
-                                //Adding the type to the boat
-                                //boat.Type = s;
+                            if (counter == 1)
+                            {
+                                //Adding the name to the member
+                                member.Name = s;
                             }
                             else if (counter == 2)
                             {
-                                //Adding the length to the boat
-                                //boat.Length = s;
+                                //Adding the personal number to the member
+                                member.PersonalNumber = s;
+                            }
+                            else if (counter == 3)
+                            {
+                                //Adding the unique id to the member
+                                member.UniqueId = s;
                             }
                             counter++;
                         }
 
                         //Adding the member to the list
-                        boats.Add(boat);
+                        members.Add(member);
                     }
                 }
             }
@@ -73,9 +84,10 @@ namespace Workshop2_App.model
         }
 
         //Returns the list of boats
-        public List<Boat> getBoatList()
+        public List<Member> getMemberList()
         {
-            return boats;
+            return members;
         }
     }
 }
+

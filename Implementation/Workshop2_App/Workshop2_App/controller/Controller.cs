@@ -210,6 +210,7 @@ namespace Workshop2_App.controller
                 {
                     changeBoat.Length = userFeedback;
                     registerBoatEnterLength = false;
+                    registerBoatForUser(changeMember, changeBoat);
                     currentView = views.registerBoatSaved;
                 }
 
@@ -273,7 +274,7 @@ namespace Workshop2_App.controller
         
         public void addMember(Member member)
         {
-            // Open the file to read from.
+            // Put the entire registry into a string
             string registryText = File.ReadAllText("..\\..\\data\\registry.txt");
 
             //Get the first part of the registry
@@ -284,6 +285,33 @@ namespace Workshop2_App.controller
 
             //Creating the new text to be added to the registry
             string newText = firstPartOfRegistry + "@" + member.UniqueId + ", " + member.Name + ", " + member.PersonalNumber + "@" + secondPartOfRegistry;
+
+            //Adding the new text to the registry
+            writeToFile(newText);
+        }
+
+        public void registerBoatForUser(Member member, Boat boat)
+        {
+            // Put the entire registry into a string
+            string registryText = File.ReadAllText("..\\..\\data\\registry.txt");
+
+            //Find the boats part in the registry
+            int boatsIndex = registryText.IndexOf("#Boats");
+
+            //Get the first part of the registry
+            string firstPartOfRegistry = registryText.Substring(0, boatsIndex);
+
+            //Get the second part of the registry
+            string secondPartOfRegistry = registryText.Substring(boatsIndex);
+
+            //Get the third part of the registry
+            string thirdPartOfRegistry = secondPartOfRegistry.Substring(6);
+
+            //Get the second part of the registry
+            secondPartOfRegistry = secondPartOfRegistry.Substring(0,6);
+
+            //Creating the new text to be added to the registry
+            string newText = firstPartOfRegistry + secondPartOfRegistry + "@" + member.UniqueId + ", " + boat.Type + ", " + boat.Length  + thirdPartOfRegistry;
 
             //Adding the new text to the registry
             writeToFile(newText);

@@ -37,6 +37,7 @@ namespace Workshop2_App.controller
             ChangeBoatEnterLength,
             registerBoatEnterType,
             registerBoatEnterLength,
+            registerBoatSaved,
             WrongInput
         };
 
@@ -51,7 +52,6 @@ namespace Workshop2_App.controller
         private bool registerNewBoat = false;
         private bool registerBoatEnterType = false;
         private bool registerBoatEnterLength = false;
-
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
 
@@ -189,6 +189,7 @@ namespace Workshop2_App.controller
                     {
                         if (number > 0)
                         {
+                            number--;
                             currentView = views.registerBoatEnterLength;
 
                             Boat.type boatType = ((Boat.type)number);
@@ -203,6 +204,13 @@ namespace Workshop2_App.controller
                         registerBoatEnterType = false;
                         registerBoatEnterLength = true;
                     }
+                }
+
+                else if (registerBoatEnterLength)
+                {
+                    changeBoat.Length = userFeedback;
+                    registerBoatEnterLength = false;
+                    currentView = views.registerBoatSaved;
                 }
 
                 //We are not changing a member or a boat,
@@ -250,7 +258,6 @@ namespace Workshop2_App.controller
                     {
                         currentView = views.showFirstView;
                     }
-               
                     else
                     {
                         currentView = views.showFirstView;
@@ -458,6 +465,9 @@ namespace Workshop2_App.controller
                     break;
                 case views.registerBoatEnterLength:
                     view.registerBoatEnterLength(changeMember, changeBoat);
+                    break;
+                case views.registerBoatSaved:
+                    view.registerBoatSaved(changeMember, changeBoat);
                     break;
                 case views.WrongInput:
                     view.viewWrongInput();

@@ -208,6 +208,11 @@ namespace Workshop2_App.view
             Console.WriteLine("Enter the length of the boat, and click enter to save:");
         }
 
+        public void registerBoatSaved(Member member, Boat boat)
+        {
+            Console.WriteLine("\nA new boat was added for member {0}, with the type {1} and length {2}", member.UniqueId, boat.Type, boat.Length);
+        }
+
         public void viewDeleteBoat()
         {
             Console.WriteLine("\nYou've chosen to delete a boat");

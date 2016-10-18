@@ -5,11 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workshop2_App.view;
+using Workshop2_App.model;
 
 namespace Workshop2_App.controller
 {
     class Controller
     {
+
+        //Getting the memberlist from MemberList class
+        MemberList memberList = new MemberList();
 
         public enum views
         {
@@ -34,11 +38,9 @@ namespace Workshop2_App.controller
         private bool changeMemberEnterPNumber = false;
         private bool changeMemberSaved = false;
 
-        private int changeMemberId;
+        private Member changeMember = new Member();
 
-        private bool changeBoat = false;
-
-        private int changeBoatId;
+        //private Boat changeBoat = new Boat();
 
         public views currentView = views.showFirstView;
 
@@ -53,13 +55,13 @@ namespace Workshop2_App.controller
             view.viewStart();
 
             string userFeedback;
-            int number;
 
             do {
 
                 userFeedback = (Console.ReadLine()).ToUpper();
                 
-                //Check if we are currently changing a member 
+
+                int number;
                 if (changeMemberEnterName)
                 {
                     if (Int32.TryParse(userFeedback, out number))
@@ -67,7 +69,7 @@ namespace Workshop2_App.controller
                         if (number > 0)
                         {
                             currentView = views.ChangeMemberEnterName;
-                            changeMemberId = number;
+                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
                         }
                         else
                         {
@@ -80,6 +82,7 @@ namespace Workshop2_App.controller
 
                 else if (changeMemberEnterPNumber)
                 {
+                    changeMember.Name = userFeedback;
                     currentView = views.ChangeMemberEnterPNumber;
                     changeMemberEnterPNumber = false;
                     changeMemberSaved = true;
@@ -87,9 +90,19 @@ namespace Workshop2_App.controller
 
                 else if (changeMemberSaved)
                 {
+                    changeMember.PersonalNumber = userFeedback;
+                    //Save member to textfile 
+                    string writeLine = replaceMember(changeMember);
+                    
+                    System.Diagnostics.Debug.WriteLine("Debug: " + writeLine);
+                    writeToFile(writeLine);
+                    //Console.WriteLine(writeLine);
+
+                   
                     currentView = views.ChangeMemberSaved;
                     changeMemberSaved = false;
                 }
+               
 
                 //We are not changing a member or a boat,
                 //show the regular menu options
@@ -144,22 +157,124 @@ namespace Workshop2_App.controller
 
         }
 
-
-        public void getInfoFromFile()
+        public void saveMember(Member member)
         {
+            //Get the content of the text file
+            string currentText = getInfoFromDb();
+        }
+
+
+        public string replaceMember(Member newMember)
+        {
+            string memberId = newMember.UniqueId;
+            string line = "";
+            string writeLine = "";
+            bool membersFound = false;
+            bool selectedMemberFound = false;
+            try
+            {   //Open the text file using a stream reader.
+                using (StreamReader sr = new StreamReader("..\\..\\data\\registry.txt"))
+                {
+                    //Read the stream line by line
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        //Find the members
+                        if (line == "#Members")
+                        {
+                            membersFound = true;
+                            writeLine = writeLine + line + "@";
+                            continue;
+                        }
+                        else if (line == "#")
+                        {
+                            membersFound = false;
+                            writeLine = writeLine + line + "@";
+                        }
+                        else { 
+
+                            //Split the string and check member Id   
+                            if (membersFound)
+                            {
+                                //Getting the properties of the member from the database (text file)
+                                string[] stringSeparators = new string[] { ", " };
+                                string[] result;
+
+                                result = line.Split(stringSeparators, StringSplitOptions.None);
+
+                                int counter = 1;
+                                foreach (string s in result)
+                                {
+                                    if (counter == 1) { 
+                                        if (s == memberId)
+                                        {
+                                            selectedMemberFound = true;
+                                        }
+                                        writeLine = writeLine + s + ", ";
+                                    }
+                                    else if (counter == 2)
+                                    {
+                                        if (selectedMemberFound)
+                                        {
+                                            writeLine = writeLine + newMember.Name + ", ";
+                                        }
+                                        else
+                                        {
+                                            writeLine = writeLine + s + ", ";
+                                        }
+                                    }
+                                    else if (counter == 3)
+                                    {
+
+                                        if (selectedMemberFound)
+                                        {
+                                            writeLine = writeLine + newMember.PersonalNumber + "@";
+                                            selectedMemberFound = false;
+                                        }
+                                        else
+                                        {
+                                            writeLine = writeLine + s + "@";
+                                        }
+                                    }
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                writeLine = writeLine + line + "@";
+                            }
+
+                        }
+
+                    }
+
+                }
+                return writeLine;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+                return writeLine;
+            }
+        }
+
+        public String getInfoFromDb()
+        {
+            string line = "";
             try
             {   // Open the text file using a stream reader.
                 using (StreamReader sr = new StreamReader("..\\..\\registry.txt"))
                 {
                     // Read the stream to a string, and write the string to the console.
-                    String line = sr.ReadToEnd();
-                    Console.WriteLine(line);
+                    line = line + sr.ReadToEnd();
+                    return line;
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
+                return line;
             }
         }
 
@@ -187,13 +302,13 @@ namespace Workshop2_App.controller
                     view.viewChangeMemberPick();
                     break;
                 case views.ChangeMemberEnterName:
-                    view.viewChangeMemberEnterName(changeMemberId);
+                    view.viewChangeMemberEnterName(changeMember);
                     break;
                 case views.ChangeMemberEnterPNumber:
-                    view.viewChangeMemberEnterPNumber(changeMemberId);
+                    view.viewChangeMemberEnterPNumber(changeMember);
                     break;
                 case views.ChangeMemberSaved:
-                    view.viewChangeMemberSaved(changeMemberId);
+                    view.viewChangeMemberSaved(changeMember);
                     break;
                 case views.LookAtMember:
                     view.viewLookAtMember();
@@ -219,8 +334,8 @@ namespace Workshop2_App.controller
         public void writeToFile(string message)
         {
             // Write the string to a file.
-            //System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Fam\\Google Drive\\Webbprogrammerare\\1DV607 Objektorienterad analys och design med UML\\Workshop II\\Implementation\\Workshop2_App\\Workshop2_App\\registry.txt", false);
-            System.IO.StreamWriter file = new System.IO.StreamWriter("..\\..\\registry.txt", false);
+            System.IO.StreamWriter file = new System.IO.StreamWriter("..\\..\\data\\registry.txt", false);
+            message = message.Replace("@", Environment.NewLine);
             file.WriteLine(message);
 
             file.Close();

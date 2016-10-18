@@ -59,18 +59,18 @@ namespace Workshop2_App.model
 
                             if (counter == 1)
                             {
-                                //Adding the name to the member
-                                member.Name = s;
+                                //Adding the unique id to the member
+                                member.UniqueId = s;
                             }
                             else if (counter == 2)
                             {
-                                //Adding the personal number to the member
-                                member.PersonalNumber = s;
+                                //Adding the name to the member
+                                member.Name = s;
                             }
                             else if (counter == 3)
                             {
-                                //Adding the unique id to the member
-                                member.UniqueId = s;
+                                //Adding the personal number to the member
+                                member.PersonalNumber = s;
                             }
                             counter++;
                         }
@@ -93,6 +93,24 @@ namespace Workshop2_App.model
         public List<Member> getMemberList()
         {
             return members;
+        }
+
+        public string getUniqueId(int memberNumber)
+        {
+            string uniqueId = "";
+
+            int counter = 1;
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                if (counter == memberNumber)
+                {
+                    uniqueId = member.UniqueId;
+                }
+                counter++;
+            }
+            return uniqueId;
         }
     }
 }

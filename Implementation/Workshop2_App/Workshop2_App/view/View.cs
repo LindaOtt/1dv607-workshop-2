@@ -9,12 +9,13 @@ namespace Workshop2_App.view
 {
     class View
     {
-        private List<Member> members = new List<Member>();
+        private List<Member> members;
         private List<Boat> boats = new List<Boat>();
         private int numberOfBoats;
 
         //Getting the memberlist from MemberList class
         MemberList memberList = new MemberList();
+
 
         public void viewStart()
         {
@@ -43,7 +44,7 @@ namespace Workshop2_App.view
             {
                 boats = member.MemberBoats;
                 numberOfBoats = boats.Count;
-                Console.WriteLine("---------------------------------------------------------\nMember name: {0} \nMember id: {1} \nNumber of boats: {2}", member.Name, member.UniqueId, numberOfBoats);
+                Console.WriteLine("---------------------------------------------------------\nMember id: {0} \nMember name: {1} \nNumber of boats: {2}", member.UniqueId, member.Name, numberOfBoats);
             }
         }
 
@@ -90,62 +91,41 @@ namespace Workshop2_App.view
             }
         }
 
-        public void viewChangeMemberEnterName(int memberId)
+        public void viewChangeMemberEnterName(Member member)
         {
-            Console.WriteLine("\nYou have chosen to change the member with unique id ");
-
-            members = memberList.getMemberList();
-
-            int counter = 1;
-            foreach (Member member in members)
-            {
-                if(counter == memberId)
-                {
-                    Console.WriteLine("{0}, {1}", member.UniqueId, member.Name);
-                    Console.WriteLine("\nEnter the new name for the member: ");
-                }
-                counter++;
-            }
+            Console.WriteLine("\nYou have chosen to change the member with unique id {0}", member.UniqueId);
+            Console.WriteLine("\nEnter the new name for the member: ");
+            
         }
 
-        public void viewChangeMemberEnterPNumber(int memberId)
+        public void viewChangeMemberEnterPNumber(Member member)
         {
-            Console.WriteLine("\nYou have chosen to change the member with unique id ");
-
-            members = memberList.getMemberList();
-
-            int counter = 1;
-            foreach (Member member in members)
-            {
-                if (counter == memberId)
-                {
-                    Console.WriteLine("{0}, {1}", member.UniqueId, member.Name);
-                    Console.WriteLine("\nEnter the new personal number for the member: ");
-                }
-                counter++;
-            }
+            Console.WriteLine("\nYou have chosen to change the member with unique id {0} and new name {1}", member.UniqueId, member.Name);
+            Console.WriteLine("\nEnter the new personal number for the member, click enter to save member: ");
         }
 
-        public void viewChangeMemberSaved(int memberId)
+        public void viewChangeMemberSaved(Member member)
         {
-            Console.WriteLine("\nYou have saved the member ");
-
-            members = memberList.getMemberList();
-
-            int counter = 1;
-            foreach (Member member in members)
-            {
-                if (counter == memberId)
-                {
-                    Console.WriteLine("{0}, {1}", member.UniqueId, member.Name);
-                }
-                counter++;
-            }
+            Console.WriteLine("\nYou have saved the member with unique id {0}, new name {1} and personal number {2}", member.UniqueId, member.Name, member.PersonalNumber);
+            
         }
 
         public void viewLookAtMember()
         {
+
             Console.WriteLine("\nYou've chosen to look at a member");
+            Console.WriteLine("Enter the number of the member you want to look at:");
+
+            members = memberList.getMemberList();
+
+            int counter = 1;
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                Console.WriteLine("---------------------------------------------------------\n{0}. Name: {1} \nPersonal number: {2}", counter, member.Name, member.PersonalNumber);
+                counter++;
+            }
         }
 
         public void viewRegisterNewBoat()
@@ -168,25 +148,5 @@ namespace Workshop2_App.view
             Console.WriteLine("\nYou've entered an option that doesn't exist. Please try again.");
         }
 
-        /*
-        public string getUniqueId(int memberNumber)
-        {
-            string uniqueId="";
-            members = memberList.getMemberList();
-
-            int counter = 1;
-
-            //Writing out the members 
-            foreach (Member member in members)
-            {
-                if (counter == memberNumber)
-                {
-                    uniqueId = member.UniqueId;
-                }
-                counter++;
-            }
-            return uniqueId;
-        }
-        */
     }
 }

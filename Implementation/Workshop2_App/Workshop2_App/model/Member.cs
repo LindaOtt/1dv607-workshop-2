@@ -8,9 +8,9 @@ namespace Workshop2_App.model
 {
     class Member
     {
-        private string name;
-        private string personalNumber;
-        private string uniqueId;
+        private string name = null;
+        private string personalNumber = null;
+        private string uniqueId = null;
         private List<Boat> memberBoats;
 
         public string Name

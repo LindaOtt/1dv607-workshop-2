@@ -72,7 +72,26 @@ namespace Workshop2_App.view
         public void viewCreateNewMember()
         {
             Console.WriteLine("\nYou've chosen to create a new member.");
+            Console.WriteLine("\nEnter the name of the member");
         }
+
+        public void viewCreateMemberEnterName(Member member)
+        {
+            Console.WriteLine("\nYou've entered the name {0}", member.Name);
+            Console.WriteLine("\nEnter the personal number of the member and click enter to save the new member:");
+        }
+
+        public void viewCreateMemberEnterPNumber(Member member)
+        {
+            Console.WriteLine("\nYou've entered the name {0} and the personal number {1}", member.Name, member.PersonalNumber);
+            Console.WriteLine("\nClick enter to save the member:");
+        }
+
+        public void newMemberCreated(Member member)
+        {
+            Console.WriteLine("\nYou've created a new member with the name {0}, the personal number {1} and the unique id {2}", member.Name, member.PersonalNumber, member.UniqueId);
+        }
+
 
         public void viewChangeMemberPick()
         {
@@ -110,7 +129,7 @@ namespace Workshop2_App.view
             
         }
 
-        public void viewLookAtMember()
+        public void viewLookAtMemberPick()
         {
 
             Console.WriteLine("\nYou've chosen to look at a member");
@@ -127,6 +146,25 @@ namespace Workshop2_App.view
                 counter++;
             }
         }
+
+        public void viewLookAtChosenMember(Member chosenMember)
+        {
+            Console.WriteLine("\nYou have chosen to look at the member with unique id {0}", chosenMember.UniqueId);
+
+            members = memberList.getMemberList();
+
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                if (chosenMember.UniqueId == member.UniqueId) { 
+                Console.WriteLine("---------------------------------------------------------\nUnique id: {0} \nName: {1} \nPersonal number: {2}", member.UniqueId, member.Name, member.PersonalNumber);
+                
+                }
+            }
+
+        }
+
+       
 
         public void viewRegisterNewBoat()
         {

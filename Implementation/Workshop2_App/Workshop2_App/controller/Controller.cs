@@ -21,11 +21,15 @@ namespace Workshop2_App.controller
             ListAllCompact,
             ListAllVerbose,
             CreateNewMember,
+            CreateMemberEnterName,
+            CreateMemberEnterPNumber,
+            NewMemberCreated,
             ChangeMemberPick,
             ChangeMemberEnterName,
             ChangeMemberEnterPNumber,
             ChangeMemberSaved,
-            LookAtMember,
+            LookAtMemberPick,
+            LookAtChosenMember,
             RegisterNewBoat,
             DeleteBoat,
             ChangeBoat,
@@ -34,9 +38,14 @@ namespace Workshop2_App.controller
             WrongInput
         };
 
+        //State variables
         private bool changeMemberEnterName = false;
         private bool changeMemberEnterPNumber = false;
         private bool changeMemberSaved = false;
+        private bool lookAtMemberPick = false;
+        private bool createNewMember = false;
+        private bool createMemberEnterName = false;
+        private bool createMemberEnterPNumber = false;
 
         private Member changeMember = new Member();
 
@@ -94,7 +103,6 @@ namespace Workshop2_App.controller
                     //Save member to textfile 
                     string writeLine = replaceMember(changeMember);
                     
-                    System.Diagnostics.Debug.WriteLine("Debug: " + writeLine);
                     writeToFile(writeLine);
                     //Console.WriteLine(writeLine);
 
@@ -102,9 +110,56 @@ namespace Workshop2_App.controller
                     currentView = views.ChangeMemberSaved;
                     changeMemberSaved = false;
                 }
+
+                else if (lookAtMemberPick)
+                {
+                    currentView = views.LookAtMemberPick;
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.LookAtChosenMember;
+                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        lookAtMemberPick = false;
+                    }
+                }
+
+                else if (createNewMember)
+                {
+                    changeMember.Name = userFeedback;
+                    currentView = views.CreateMemberEnterName;
+                    createNewMember = false;
+                    createMemberEnterName = true;
+                }
+
+                else if (createMemberEnterName)
+                {
+                    changeMember.PersonalNumber = userFeedback;
+                    currentView = views.CreateMemberEnterPNumber;
+                    createMemberEnterName = false;
+                    createMemberEnterPNumber = true;
+                }
                
+                else if (createMemberEnterPNumber)
+                {
+                    //Creating a unique id for the member
+                    string uniqueId = generateId();
+                    changeMember.UniqueId = uniqueId;
+
+                    //Adding the member to the database
+                    addMember(changeMember);
+
+                    currentView = views.NewMemberCreated;
+                    createMemberEnterPNumber = false;
+                }
 
                 //We are not changing a member or a boat,
+                //or looking at a member
                 //show the regular menu options
                 else { 
                     if (userFeedback == "A")
@@ -118,6 +173,7 @@ namespace Workshop2_App.controller
                     else if (userFeedback == "C")
                     {
                         currentView = views.CreateNewMember;
+                        createNewMember = true;
                     }
                     else if (userFeedback == "D")
                     {
@@ -126,7 +182,8 @@ namespace Workshop2_App.controller
                     }
                     else if (userFeedback == "E")
                     {
-                        currentView = views.LookAtMember;
+                        currentView = views.LookAtMemberPick;
+                        lookAtMemberPick = true;
                     }
                     else if (userFeedback == "F")
                     {
@@ -157,10 +214,23 @@ namespace Workshop2_App.controller
 
         }
 
-        public void saveMember(Member member)
+        
+        public void addMember(Member member)
         {
-            //Get the content of the text file
-            string currentText = getInfoFromDb();
+            // Open the file to read from.
+            string registryText = File.ReadAllText("..\\..\\data\\registry.txt");
+
+            //Get the first part of the registry
+            string firstPartOfRegistry = registryText.Substring(0, 8);
+
+            //Get the second part of the registry
+            string secondPartOfRegistry = registryText.Substring(9);
+
+            //Creating the new text to be added to the registry
+            string newText = firstPartOfRegistry + "@" + member.UniqueId + ", " + member.Name + ", " + member.PersonalNumber + "@" + secondPartOfRegistry;
+
+            //Adding the new text to the registry
+            writeToFile(newText);
         }
 
 
@@ -298,6 +368,15 @@ namespace Workshop2_App.controller
                 case views.CreateNewMember:
                     view.viewCreateNewMember();
                     break;
+                case views.CreateMemberEnterName:
+                    view.viewCreateMemberEnterName(changeMember);
+                    break;
+                case views.CreateMemberEnterPNumber:
+                    view.viewCreateMemberEnterPNumber(changeMember);
+                    break;
+                case views.NewMemberCreated:
+                    view.newMemberCreated(changeMember);
+                    break;
                 case views.ChangeMemberPick:
                     view.viewChangeMemberPick();
                     break;
@@ -310,8 +389,11 @@ namespace Workshop2_App.controller
                 case views.ChangeMemberSaved:
                     view.viewChangeMemberSaved(changeMember);
                     break;
-                case views.LookAtMember:
-                    view.viewLookAtMember();
+                case views.LookAtMemberPick:
+                    view.viewLookAtMemberPick();
+                    break;
+                case views.LookAtChosenMember:
+                    view.viewLookAtChosenMember(changeMember);
                     break;
                 case views.RegisterNewBoat:
                     view.viewRegisterNewBoat();
@@ -339,6 +421,13 @@ namespace Workshop2_App.controller
             file.WriteLine(message);
 
             file.Close();
+        }
+
+        public string generateId()
+        {
+            long currentTime = DateTime.Now.Ticks;
+            string id = currentTime.ToString();
+            return id;
         }
     }
 }

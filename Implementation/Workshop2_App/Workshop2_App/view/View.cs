@@ -16,6 +16,10 @@ namespace Workshop2_App.view
         //Getting the memberlist from MemberList class
         MemberList memberList = new MemberList();
 
+        //Getting the boatlist from the BoatList class
+        BoatList boatList = new BoatList();
+
+
 
         public void viewStart()
         {
@@ -216,6 +220,18 @@ namespace Workshop2_App.view
         public void viewDeleteBoat()
         {
             Console.WriteLine("\nYou've chosen to delete a boat");
+            Console.WriteLine("So please pick the boat you want to delete from the list below:");
+            boatList.getAllBoatsFromDb();
+            boats = boatList.getBoatList();
+
+            int counter = 1;
+            //Writing out the boats 
+            foreach (Boat boat in boats)
+            {
+
+                Console.WriteLine("---------------------------------------------------------\n{0}. Member Id: {1} \nBoat Type: {2} \nBoat length: {3}", counter, boat.UniqueId, boat.Type, boat.Length);
+                counter++;
+            }
         }
 
         public void viewChangeBoat()

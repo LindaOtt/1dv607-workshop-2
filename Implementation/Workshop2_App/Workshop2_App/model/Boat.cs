@@ -17,12 +17,26 @@ namespace Workshop2_App.model
         };
 
         private string length;
+        private string uniqueId;
 
         public type Type
         {
             get;
             set;
         }
+
+        public string UniqueId
+        {
+            get
+            {
+                return uniqueId;
+            }
+            set
+            {
+                uniqueId = value;
+            }
+        }
+
 
         public string Length
         {

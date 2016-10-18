@@ -169,6 +169,43 @@ namespace Workshop2_App.view
         public void viewRegisterNewBoat()
         {
             Console.WriteLine("\nYou've chosen to register a new boat");
+            Console.WriteLine("Please choose the member you want to register the boat for");
+
+            members = memberList.getMemberList();
+
+            int counter = 1;
+            //Writing out the members 
+            foreach (Member member in members)
+            {
+                
+                Console.WriteLine("---------------------------------------------------------\n{0}. Name: {1} \nPersonal number: {2} \nMember Id: {3}", counter, member.Name, member.PersonalNumber, member.UniqueId);
+                counter++;
+            }
+
+        }
+
+        public void registerBoatEnterType(Member member, Boat boat)
+        {
+            Console.WriteLine("\nYou've chosen to add a boat to member {0}", member.UniqueId);
+            Console.WriteLine("Choose the type of boat:");
+
+            //Get the boat types length
+            int counter = Enum.GetNames(typeof(Boat.type)).Length;
+            int counterType;
+
+            for (int i=0; i<counter; i++)
+            {
+                counterType = i + 1;
+                Console.WriteLine("{0}." + Enum.GetName(typeof(Boat.type), i), counterType);
+            }
+
+        }
+
+        public void registerBoatEnterLength(Member member, Boat boat)
+        {
+            Console.WriteLine("\nYou've chosen to add a boat to member {0}", member.UniqueId);
+            Console.WriteLine("With the type {0}", boat.Type);
+            Console.WriteLine("Enter the length of the boat, and click enter to save:");
         }
 
         public void viewDeleteBoat()

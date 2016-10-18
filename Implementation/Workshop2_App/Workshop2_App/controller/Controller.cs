@@ -35,6 +35,8 @@ namespace Workshop2_App.controller
             ChangeBoat,
             ChangeBoatEnterType,
             ChangeBoatEnterLength,
+            registerBoatEnterType,
+            registerBoatEnterLength,
             WrongInput
         };
 
@@ -46,8 +48,12 @@ namespace Workshop2_App.controller
         private bool createNewMember = false;
         private bool createMemberEnterName = false;
         private bool createMemberEnterPNumber = false;
+        private bool registerNewBoat = false;
+        private bool registerBoatEnterType = false;
+        private bool registerBoatEnterLength = false;
 
         private Member changeMember = new Member();
+        private Boat changeBoat = new Boat();
 
         //private Boat changeBoat = new Boat();
 
@@ -158,9 +164,51 @@ namespace Workshop2_App.controller
                     createMemberEnterPNumber = false;
                 }
 
+                else if (registerNewBoat)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.registerBoatEnterType;
+                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        registerNewBoat = false;
+                        registerBoatEnterType = true;
+                    }
+
+                }
+
+                else if (registerBoatEnterType)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.registerBoatEnterLength;
+
+                            Boat.type boatType = ((Boat.type)number);
+
+                            changeBoat.Type = boatType;
+
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        registerBoatEnterType = false;
+                        registerBoatEnterLength = true;
+                    }
+                }
+
                 //We are not changing a member or a boat,
                 //or looking at a member
-                //show the regular menu options
+                //or registering a new boat for a member
+                //so show the regular menu options
                 else { 
                     if (userFeedback == "A")
                     {
@@ -188,6 +236,7 @@ namespace Workshop2_App.controller
                     else if (userFeedback == "F")
                     {
                         currentView = views.RegisterNewBoat;
+                        registerNewBoat = true;
                     }
                     else if (userFeedback == "G")
                     {
@@ -404,6 +453,12 @@ namespace Workshop2_App.controller
                 case views.ChangeBoat:
                     view.viewChangeBoat();
                     break;
+                case views.registerBoatEnterType:
+                    view.registerBoatEnterType(changeMember, changeBoat);
+                    break;
+                case views.registerBoatEnterLength:
+                    view.registerBoatEnterLength(changeMember, changeBoat);
+                    break;
                 case views.WrongInput:
                     view.viewWrongInput();
                     break;
@@ -428,6 +483,12 @@ namespace Workshop2_App.controller
             long currentTime = DateTime.Now.Ticks;
             string id = currentTime.ToString();
             return id;
+        }
+
+
+        public static T ParseEnum<T>(string value)
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
         }
     }
 }

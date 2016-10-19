@@ -242,6 +242,24 @@ namespace Workshop2_App.view
         public void viewChangeBoat()
         {
             Console.WriteLine("\nYou've chosen to change a boat");
+            Console.WriteLine("So please pick the boat you want to change from the list below:");
+            boatList.getAllBoatsFromDb();
+            boats = boatList.getBoatList();
+
+            int counter = 1;
+            //Writing out the boats 
+            foreach (Boat boat in boats)
+            {
+
+                Console.WriteLine("---------------------------------------------------------\n{0}. Member Id: {1} \nBoat Type: {2} \nBoat length: {3}", counter, boat.UniqueId, boat.Type, boat.Length);
+                counter++;
+            }
+        }
+
+        public void changeBoatEnterId(Boat boat)
+        {
+            Console.WriteLine("\nYou've chosen to change the boat with the order number {0}", boat.OrderNumber);
+            Console.WriteLine("Enter a new member id for the boat:");
         }
 
         public void viewWrongInput()

@@ -35,6 +35,7 @@ namespace Workshop2_App.controller
             DeleteBoatPick,
             DeletedBoat,
             ChangeBoat,
+            ChangeBoatEnterId,
             ChangeBoatEnterType,
             ChangeBoatEnterLength,
             registerBoatEnterType,
@@ -55,7 +56,10 @@ namespace Workshop2_App.controller
         private bool registerBoatEnterType = false;
         private bool registerBoatEnterLength = false;
         private bool deleteBoat = false;
-        private bool deleteBoatPick = false;
+        private bool changeBoatPick = false;
+        private bool changeBoatEnterId = false;
+        private bool changeBoatEnterType = false;
+        private bool changeBoatEnterLength = false;
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
 
@@ -234,11 +238,33 @@ namespace Workshop2_App.controller
                             currentView = views.showFirstView;
                         }
                         deleteBoat = false;
-                        deleteBoatPick = true;
                     }
                 }
 
+                else if (changeBoatPick)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.ChangeBoatEnterId;
+                            changeBoat.OrderNumber = number;
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        changeBoatPick = false;
+                        changeBoatEnterId = true;
+                    }
+                }
 
+                else if (changeBoatEnterId)
+                {
+                    currentView = views.ChangeBoatEnterId;
+                    changeBoatEnterId = false;
+                    changeBoatEnterType = true;
+                }
                 //We are not changing a member or a boat,
                 //or looking at a member
                 //or registering a new boat for a member
@@ -280,6 +306,7 @@ namespace Workshop2_App.controller
                     else if (userFeedback == "H")
                     {
                         currentView = views.ChangeBoat;
+                        changeBoatPick = true;
                     }
                     else if (userFeedback == "0")
                     {
@@ -523,6 +550,9 @@ namespace Workshop2_App.controller
                     break;
                 case views.registerBoatSaved:
                     view.registerBoatSaved(changeMember, changeBoat);
+                    break;
+                case views.ChangeBoatEnterId:
+                    view.changeBoatEnterId(changeBoat);
                     break;
                 case views.WrongInput:
                     view.viewWrongInput();

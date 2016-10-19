@@ -262,6 +262,35 @@ namespace Workshop2_App.view
             Console.WriteLine("Enter a new member id for the boat:");
         }
 
+        public void changeBoatEnterType(Boat boat)
+        {
+            Console.WriteLine("\nYou've chosen to change the boat with the order number {0} to have the member id {1}", boat.OrderNumber, boat.UniqueId);
+
+            Console.WriteLine("Choose the type of boat and click enter to save the boat:");
+
+            //Get the boat types length
+            int counter = Enum.GetNames(typeof(Boat.type)).Length;
+            int counterType;
+
+            for (int i = 0; i < counter; i++)
+            {
+                counterType = i + 1;
+                Console.WriteLine("{0}." + Enum.GetName(typeof(Boat.type), i), counterType);
+            }
+        }
+
+        public void changeBoatEnterLength(Boat boat)
+        {
+            Console.WriteLine("\nYou've chosen to change the boat with the order number {0} to have the member id {1} and the type {2}", boat.OrderNumber, boat.UniqueId, boat.Type);
+            Console.WriteLine("The boat has been saved.");
+            
+        }
+
+        public void changeBoatSaved(Boat boat)
+        {
+            Console.WriteLine("You've saved the boat with the order number {0}, member id {1}, type {2} and length {3}", boat.OrderNumber, boat.UniqueId, boat.Type, boat.Length);
+        }
+
         public void viewWrongInput()
         {
             Console.WriteLine("\nYou've entered an option that doesn't exist. Please try again.");

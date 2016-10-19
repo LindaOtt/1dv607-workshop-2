@@ -38,6 +38,7 @@ namespace Workshop2_App.controller
             ChangeBoatEnterId,
             ChangeBoatEnterType,
             ChangeBoatEnterLength,
+            ChangeBoatSaved,
             registerBoatEnterType,
             registerBoatEnterLength,
             registerBoatSaved,
@@ -60,6 +61,7 @@ namespace Workshop2_App.controller
         private bool changeBoatEnterId = false;
         private bool changeBoatEnterType = false;
         private bool changeBoatEnterLength = false;
+        private bool changeBoatSaved = false;
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
 
@@ -247,7 +249,7 @@ namespace Workshop2_App.controller
                     {
                         if (number > 0)
                         {
-                            currentView = views.ChangeBoatEnterId;
+                            //currentView = views.ChangeBoatEnterId;
                             changeBoat.OrderNumber = number;
                         }
                         else
@@ -264,11 +266,40 @@ namespace Workshop2_App.controller
                     currentView = views.ChangeBoatEnterId;
                     changeBoatEnterId = false;
                     changeBoatEnterType = true;
+                    
                 }
-                //We are not changing a member or a boat,
-                //or looking at a member
-                //or registering a new boat for a member
-                //so show the regular menu options
+
+                else if (changeBoatEnterType)
+                {
+                    currentView = views.ChangeBoatEnterType;
+                    changeBoatEnterType = false;
+                    changeBoatEnterLength = true;
+                    changeBoat.UniqueId = userFeedback;
+                    
+                }
+
+                else if (changeBoatEnterLength)
+                {
+                    changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), userFeedback);
+                    currentView = views.ChangeBoatEnterLength;
+
+                    //Updating the registry text with the updated boat
+                    string saveBoatText = saveChangedBoat(changeBoat);
+
+                    //Saving the boat to the registry
+                    writeToFile(saveBoatText);
+
+                    changeBoatEnterLength = false;
+                    changeBoatSaved = true;
+                }
+
+                else if (changeBoatSaved)
+                {
+                    currentView = views.ChangeBoatSaved;
+                    changeBoatSaved = false;
+                }
+
+                //Show the regular menu options
                 else { 
                     if (userFeedback == "A")
                     {
@@ -463,6 +494,64 @@ namespace Workshop2_App.controller
             }
         }
 
+        public string saveChangedBoat(Boat boat)
+        {
+            //Read the text file
+            string line;
+            string writeLine = "";
+            int counter = 0;
+            bool boatsFound = false;
+            string boatOrderNumberString = (boat.OrderNumber).ToString();
+            System.IO.StreamReader file =
+                new System.IO.StreamReader(@"..\..\\data\\registry.txt");
+            while ((line = file.ReadLine()) != null)
+            {
+
+                //Getting the "Boats" part
+                if (line == "#Boats")
+                {
+                    boatsFound = true;
+                    counter = 1;
+                    writeLine = writeLine + line;
+                }
+                else if (line == "##")
+                {
+                    boatsFound = false;
+                    writeLine = writeLine + "@" + line;
+                    break;
+                }
+                else
+                {
+                    if (boatsFound == true)
+                    {
+                        //This is the boat that needs to be replaced
+                        if (counter == boat.OrderNumber) {
+                            writeLine = writeLine + "@" + boat.UniqueId + ", " + boat.Type + ", " + "boat.Length";
+                        }
+                        else
+                        {
+                            writeLine = writeLine + "@" + line;
+                        }
+
+                    } //End if boatsfound
+                    else
+                    {
+                        if (line == "#Members")
+                        {
+                            writeLine = writeLine + line;
+                        }
+                        else { 
+                            writeLine = writeLine + "@" + line;
+                        }
+                    }
+                } //End else
+                counter++;
+            } //End while
+
+            file.Close();
+            return writeLine;
+        }
+
         public string getInfoFromDb()
         {
             string line = "";
@@ -553,6 +642,15 @@ namespace Workshop2_App.controller
                     break;
                 case views.ChangeBoatEnterId:
                     view.changeBoatEnterId(changeBoat);
+                    break;
+                case views.ChangeBoatEnterType:
+                    view.changeBoatEnterType(changeBoat);
+                    break;
+                case views.ChangeBoatEnterLength:
+                    view.changeBoatEnterLength(changeBoat);
+                    break;
+                case views.ChangeBoatSaved:
+                    view.changeBoatSaved(changeBoat);
                     break;
                 case views.WrongInput:
                     view.viewWrongInput();

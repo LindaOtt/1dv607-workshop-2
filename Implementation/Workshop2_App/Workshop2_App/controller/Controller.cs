@@ -32,6 +32,8 @@ namespace Workshop2_App.controller
             LookAtChosenMember,
             RegisterNewBoat,
             DeleteBoat,
+            DeleteBoatPick,
+            DeletedBoat,
             ChangeBoat,
             ChangeBoatEnterType,
             ChangeBoatEnterLength,
@@ -52,6 +54,8 @@ namespace Workshop2_App.controller
         private bool registerNewBoat = false;
         private bool registerBoatEnterType = false;
         private bool registerBoatEnterLength = false;
+        private bool deleteBoat = false;
+        private bool deleteBoatPick = false;
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
 
@@ -214,6 +218,27 @@ namespace Workshop2_App.controller
                     currentView = views.registerBoatSaved;
                 }
 
+                else if (deleteBoat)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.DeleteBoatPick;
+                            changeBoat.OrderNumber = number;
+                            string newBoatsText = deleteBoatFromDb(number);
+                            writeToFile(newBoatsText);
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        deleteBoat = false;
+                        deleteBoatPick = true;
+                    }
+                }
+
+
                 //We are not changing a member or a boat,
                 //or looking at a member
                 //or registering a new boat for a member
@@ -250,6 +275,7 @@ namespace Workshop2_App.controller
                     else if (userFeedback == "G")
                     {
                         currentView = views.DeleteBoat;
+                        deleteBoat = true;
                     }
                     else if (userFeedback == "H")
                     {
@@ -271,7 +297,6 @@ namespace Workshop2_App.controller
 
         }
 
-        
         public void addMember(Member member)
         {
             // Put the entire registry into a string
@@ -316,8 +341,7 @@ namespace Workshop2_App.controller
             //Adding the new text to the registry
             writeToFile(newText);
         }
-
-
+        
         public string replaceMember(Member newMember)
         {
             string memberId = newMember.UniqueId;
@@ -412,7 +436,7 @@ namespace Workshop2_App.controller
             }
         }
 
-        public String getInfoFromDb()
+        public string getInfoFromDb()
         {
             string line = "";
             try
@@ -485,6 +509,9 @@ namespace Workshop2_App.controller
                 case views.DeleteBoat:
                     view.viewDeleteBoat();
                     break;
+                case views.DeleteBoatPick:
+                    view.viewDeleteBoatPick(changeBoat);
+                    break;
                 case views.ChangeBoat:
                     view.viewChangeBoat();
                     break;
@@ -504,6 +531,62 @@ namespace Workshop2_App.controller
                     break;
             }
 
+        }
+
+        public string deleteBoatFromDb(int orderNumber)
+        {
+            string line = "";
+            string writeLine = "";
+            bool boatsFound = false;
+            
+            try
+            {   //Open the text file using a stream reader.
+                using (StreamReader sr = new StreamReader("..\\..\\data\\registry.txt"))
+                {
+                    int counter = 0;
+                    //Read the stream line by line
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        //Find the members
+                        if (line == "#Boats")
+                        {
+                            counter = 0;
+                            boatsFound = true;
+                            writeLine = writeLine + line + "@";
+                        }
+                        else if (line == "##")
+                        {
+                            boatsFound = false;
+                            writeLine = writeLine + line + "@";
+                        }
+                        else
+                        { 
+                            if (boatsFound)
+                            {
+                                if (counter != orderNumber)
+                                {
+                                    writeLine = writeLine + line + "@";
+                                }
+                                
+                            }
+                            else
+                            {
+                                writeLine = writeLine + line + "@";
+                            }
+
+                        }//End else
+                        counter++;
+                    }//End while
+
+                }
+                return writeLine;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+                return writeLine;
+            }
         }
 
         public void writeToFile(string message)

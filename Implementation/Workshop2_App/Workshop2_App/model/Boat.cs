@@ -18,6 +18,7 @@ namespace Workshop2_App.model
 
         private string length;
         private string uniqueId;
+        private int orderNumber;
 
         public type Type
         {
@@ -47,6 +48,18 @@ namespace Workshop2_App.model
             set
             {
                 length = value;
+            }
+        }
+
+        public int OrderNumber
+        {
+            get
+            {
+                return orderNumber;
+            }
+            set
+            {
+                orderNumber = value;
             }
         }
 

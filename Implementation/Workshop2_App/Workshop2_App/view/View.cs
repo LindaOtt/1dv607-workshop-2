@@ -234,6 +234,11 @@ namespace Workshop2_App.view
             }
         }
 
+        public void viewDeleteBoatPick(Boat boat)
+        {
+            Console.WriteLine("You've deleted the boat with order number {0}", boat.OrderNumber ); 
+        }
+
         public void viewChangeBoat()
         {
             Console.WriteLine("\nYou've chosen to change a boat");

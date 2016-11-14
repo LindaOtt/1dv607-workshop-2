@@ -66,5 +66,6 @@ namespace Workshop2_App.model
         {
             return memberBoats;
         }
+
     }
 }

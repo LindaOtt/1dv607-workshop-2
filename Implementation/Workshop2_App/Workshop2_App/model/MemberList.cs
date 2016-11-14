@@ -13,7 +13,7 @@ namespace Workshop2_App.model
         private List<Member> members = new List<Member>();
 
         //List to store the boats for the member in
-        private List<Boat> memberBoats = new List<Boat>();
+        //private List<Boat> memberBoats = new List<Boat>();
 
         public MemberList()
         {
@@ -25,7 +25,7 @@ namespace Workshop2_App.model
         {
             //Read the text file
             string line;
-            Boolean membersFound = false;
+            bool membersFound = false;
             System.IO.StreamReader file =
                 new System.IO.StreamReader(@"..\..\\data\\registry.txt");
             while ((line = file.ReadLine()) != null)
@@ -35,10 +35,18 @@ namespace Workshop2_App.model
                 {
                     membersFound = true;
                 }
+                
                 else if (line == "#")
                 {
                     membersFound = false;
-                    break;
+                }
+                else if (line == "##")
+                {
+                    membersFound = false;
+                }
+                else if (line == "")
+                {
+                    continue;
                 }
                 else
                 {
@@ -77,11 +85,14 @@ namespace Workshop2_App.model
 
                         //Adding the boatlist to the member
                         BoatList boatList = new BoatList(member.UniqueId);
-                        memberBoats = boatList.getBoatList();
-                        member.MemberBoats = memberBoats;
+                        member.MemberBoats = boatList.getBoatList();
 
                         //Adding the member to the list
                         members.Add(member);
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
             }

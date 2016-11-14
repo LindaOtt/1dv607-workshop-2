@@ -9,8 +9,10 @@ using Workshop2_App.model;
 
 namespace Workshop2_App.controller
 {
-    class Controller
+    class MasterController
     {
+
+        private View view;
 
         //Getting the memberlist from MemberList class
         MemberList memberList = new MemberList();
@@ -65,17 +67,16 @@ namespace Workshop2_App.controller
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
 
-        //private Boat changeBoat = new Boat();
 
         public views currentView = views.showFirstView;
 
+        public MasterController(View sentView)
+        {
+            view = sentView;
+        }
+
         public void showView()
         {
-
-            View view = new View();
-            
-            //Prevent app from ending if ctrl+c is pressed
-            //Console.TreatControlCAsInput = true;
 
             view.viewStart();
 
@@ -422,6 +423,11 @@ namespace Workshop2_App.controller
                             continue;
                         }
                         else if (line == "#")
+                        {
+                            membersFound = false;
+                            writeLine = writeLine + line + "@";
+                        }
+                        else if (line == "##")
                         {
                             membersFound = false;
                             writeLine = writeLine + line + "@";

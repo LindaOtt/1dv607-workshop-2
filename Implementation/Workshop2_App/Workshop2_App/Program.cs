@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workshop2_App.controller;
+using Workshop2_App.view;
 
 namespace Workshop2_App
 {
@@ -12,14 +13,15 @@ namespace Workshop2_App
     {
         static void Main(string[] args)
         {
+            //Creating the view
+            View view = new View();
 
             //Creating the controller
-            Controller controller = new Controller();
+            MasterController controller = new MasterController(view);
 
             //Getting the view
             controller.showView();
         }
 
-       
     }
 }

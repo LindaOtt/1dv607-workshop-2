@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Workshop2_App.view;
 using Workshop2_App.model;
+using System.Diagnostics;
 
 namespace Workshop2_App.controller
 {
@@ -47,7 +48,7 @@ namespace Workshop2_App.controller
             WrongInput
         };
 
-        //State variables
+        //Old state variables
         private bool changeMemberEnterName = false;
         private bool changeMemberEnterPNumber = false;
         private bool changeMemberSaved = false;
@@ -64,15 +65,32 @@ namespace Workshop2_App.controller
         private bool changeBoatEnterType = false;
         private bool changeBoatEnterLength = false;
         private bool changeBoatSaved = false;
+        
+        //New state variables
+        private bool memberControl = false; //Shows if we are working on members
+        private bool boatControl = false; //Shows if we are working on boats
+        private bool createControl = false; //Shows if we are creating something
+        private bool changeControl = false; //Shows if we are changing something
+        private bool deleteControl = false; //Shows if we are deleting something
+        private bool pnumberControl = false; //Shows if we are working on personal number
+        private bool lookControl = false; //Shows if we are looking at something
+        private bool pickControl = false; //Shows if we are picking something from a list
+        private bool enterNameControl = false; //Shows if we are entering a name
+        private bool enterPNumberControl = false; //Shows if we are entering a personal number
+        private bool saveControl = false; //Shows if we are saving something
+
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
 
+        private BoatController boatController = new BoatController();
+        private MemberController memberController;
 
         public views currentView = views.showFirstView;
 
         public MasterController(View sentView)
         {
             view = sentView;
+            memberController = new MemberController(changeMember);
         }
 
         public void showView()
@@ -86,8 +104,127 @@ namespace Workshop2_App.controller
 
                 userFeedback = (Console.ReadLine()).ToUpper();
                 
+                string input = "";
+                
+                //We are working on a member
+                if (memberControl)
+                {
+                    Debug.WriteLine("Inside memberControl");
+                    //We are creating a new member
+                    if (createControl)
+                    {
+                        Debug.WriteLine("Inside createControl");
+                        //We are entering the name for a new member
+                        if (enterNameControl)
+                        {
+                            Debug.WriteLine("Inside enterNameControl");
+                            input = "memberEnterName";
+                        }
 
-                int number;
+                        //We are entering the personal number for a new member
+                        if (enterPNumberControl)
+                        {
+                            input = "memberEnterPNumber";
+                        }
+                    }
+                    //We are changing a member
+                    else if (changeControl)
+                    {
+                         //We are changing the name for a member
+                        if (enterNameControl)
+                        {
+                            input = "memberChangeName";
+                        }
+                        //We are changing the personal number for a member
+                        else if (enterPNumberControl)
+                        {
+                            input = "memberChangePNumber";
+                        }
+                        //We are saving the member
+                        else if (saveControl)
+                        {
+                            input = "memberSave";
+                        }
+                    }
+                    //We are looking at a member
+                    else if (lookControl)
+                    {
+                        //We are picking a member to look at
+                        if (pickControl)
+                        {
+                            input = "memberLookAtPick";
+                        }
+                    }
+                    changeMember = memberController.getMember(input, userFeedback);
+                }
+                else if (boatControl)
+                {
+                    //We are creating a new boat for a member
+                    if (createControl)
+                    {
+                        input = "boatCreate";
+                    }
+                    //We are deleting a boat
+                    if (deleteControl)
+                    {
+                        input = "boatDelete";
+                    }
+                    //We are changing a boat
+                    if (changeControl)
+                    {
+                        input = "boatChange";
+                    }
+                    Debug.WriteLine("input: {0}", input);
+                    changeBoat = boatController.getBoat(input, userFeedback);
+                }
+                else {
+
+                    switch (userFeedback)
+                    {
+                        case "A":
+                            currentView = views.ListAllCompact;
+                            break;
+                        case "B":
+                            currentView = views.ListAllVerbose;
+                            break;
+                        case "C":
+                            currentView = views.CreateNewMember;
+                            memberControl = true;
+                            createControl = true;
+                            enterNameControl = true;
+                            break;
+                        case "D":
+                            currentView = views.ChangeMemberPick;
+                            break;
+                        case "E":
+                            currentView = views.LookAtMemberPick;
+                            //lookAtMemberPick = true;
+                            memberControl = true;
+                            lookControl = true;
+                            break;
+                        case "F":
+                            currentView = views.RegisterNewBoat;
+                            registerNewBoat = true;
+                            break;
+                        case "G":
+                            currentView = views.DeleteBoat;
+                            deleteBoat = true;
+                            break;
+                        case "H":
+                            currentView = views.ChangeBoat;
+                            changeBoatPick = true;
+                            break;
+                        case "0":
+                            currentView = views.showFirstView;
+                            break;
+                        default:
+                            currentView = views.showFirstView;
+                            break;
+                    }
+                    
+                }
+
+                /*
                 if (changeMemberEnterName)
                 {
                     if (Int32.TryParse(userFeedback, out number))
@@ -250,7 +387,6 @@ namespace Workshop2_App.controller
                     {
                         if (number > 0)
                         {
-                            //currentView = views.ChangeBoatEnterId;
                             changeBoat.OrderNumber = number;
                         }
                         else
@@ -299,8 +435,10 @@ namespace Workshop2_App.controller
                     currentView = views.ChangeBoatSaved;
                     changeBoatSaved = false;
                 }
+                */
 
                 //Show the regular menu options
+                /*
                 else { 
                     if (userFeedback == "A")
                     {
@@ -349,6 +487,7 @@ namespace Workshop2_App.controller
                         currentView = views.showFirstView;
                     }
                 }
+                */
 
                 activateView();
                 

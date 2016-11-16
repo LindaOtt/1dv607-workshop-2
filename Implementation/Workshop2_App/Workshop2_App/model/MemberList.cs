@@ -39,6 +39,7 @@ namespace Workshop2_App.model
                 else if (line == "#")
                 {
                     membersFound = false;
+                    break;
                 }
                 else if (line == "##")
                 {

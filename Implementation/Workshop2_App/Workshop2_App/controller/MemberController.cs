@@ -14,48 +14,49 @@ namespace Workshop2_App.controller
         private string inputFromUser;
         private string userFeedback;
         int number;
-        private Member changeMember;
+        private Member member;
         private MemberList memberList;
 
-        public Member getMember(string input, string userFeedback)
+        public Member getMember()
         {
-            inputFromUser = input;
-            return changeMember;
+            return member;
         }
 
-        public MemberController(Member member) {
-            changeMember = member;
+        public void setMemberFromInput(string input, string userFeedback, Member changeMember)
+        {
+            Debug.Write("SetMemberFromInput input: ");
+            Debug.Write(input);
+            Debug.WriteLine(" ");
 
-            switch (inputFromUser) {
-                case "memberEntername":
-                    Console.WriteLine("Inside memberEnterName");
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            //currentView = views.ChangeMemberEnterName;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            //currentView = views.showFirstView;
-                        }
-                    }
+            switch (input)
+            {
+                case "memberEnterName":
+                    Debug.WriteLine("input: memberEnterName");
+                    Debug.Write("userFeedback Name: ");
+                    Debug.Write(userFeedback);
+                    changeMember.Name = userFeedback;
                     break;
                 case "memberEnterPNumber":
+                    Debug.WriteLine("inputFromUser: memberEnterPNumber");
+                    changeMember.PersonalNumber = userFeedback;
+                    break;
+                case "memberCreateSave":
+                    Debug.WriteLine("inputFromUser: memberCreateSave");
+                    changeMember.UniqueId = userFeedback;
                     break;
                 case "memberChangeName":
                     break;
                 case "memberChangePNumber":
                     break;
-                case "memberSave":
-                    break;
                 case "memberLookAtPick":
                     break;
                 default:
-                    Debug.WriteLine("Default inputFromUser");
+                    Debug.WriteLine("inputFromUser: default");
                     break;
-            } 
+            }
+
+            member = changeMember;
         }
+
     }
 }

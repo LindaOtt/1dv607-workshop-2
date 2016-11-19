@@ -90,7 +90,7 @@ namespace Workshop2_App.controller
         public MasterController(View sentView)
         {
             view = sentView;
-            memberController = new MemberController(changeMember);
+            memberController = new MemberController();
         }
 
         public void showView()
@@ -107,41 +107,67 @@ namespace Workshop2_App.controller
                 string input = "";
                 
                 //We are working on a member
-                if (memberControl)
+                if (memberControl == true)
                 {
-                    Debug.WriteLine("Inside memberControl");
                     //We are creating a new member
-                    if (createControl)
+                    if (createControl == true)
                     {
-                        Debug.WriteLine("Inside createControl");
                         //We are entering the name for a new member
-                        if (enterNameControl)
+                        if (enterNameControl == true)
                         {
                             Debug.WriteLine("Inside enterNameControl");
                             input = "memberEnterName";
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            changeMember = memberController.getMember();
+                            enterNameControl = false;
+                            enterPNumberControl = true;
+                            currentView = views.CreateMemberEnterPNumber;
                         }
 
                         //We are entering the personal number for a new member
-                        if (enterPNumberControl)
+                        else if (enterPNumberControl == true)
                         {
+                            Debug.WriteLine(" ");
+                            Debug.WriteLine("Inside enterPNumberControl");
                             input = "memberEnterPNumber";
+                            
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            changeMember = memberController.getMember();
+
+                            //Adding the unique id
+                            input = "memberCreateSave";
+
+                            //Creating a unique id for the member
+                            string uniqueId = generateId();
+                            memberController.setMemberFromInput(input, uniqueId, changeMember);
+
+                            enterPNumberControl = false;
+
+                            //Adding the member to the database
+                            addMember(changeMember);
+
+                            memberControl = false;
+                            createControl = false;
+
+                            Debug.WriteLine("Member name: {0}, personal number: {1}, unique id: {2}", changeMember.Name, changeMember.PersonalNumber, changeMember.UniqueId);
+                            currentView = views.NewMemberCreated;
                         }
                     }
                     //We are changing a member
-                    else if (changeControl)
+                    else if (changeControl == true)
                     {
                          //We are changing the name for a member
-                        if (enterNameControl)
+                        if (enterNameControl == true)
                         {
                             input = "memberChangeName";
                         }
                         //We are changing the personal number for a member
-                        else if (enterPNumberControl)
+                        else if (enterPNumberControl == true)
                         {
                             input = "memberChangePNumber";
                         }
                         //We are saving the member
-                        else if (saveControl)
+                        else if (saveControl == true)
                         {
                             input = "memberSave";
                         }
@@ -155,22 +181,23 @@ namespace Workshop2_App.controller
                             input = "memberLookAtPick";
                         }
                     }
-                    changeMember = memberController.getMember(input, userFeedback);
+                    
+                    Debug.WriteLine("changeMember name: {0}", changeMember.Name);
                 }
-                else if (boatControl)
+                else if (boatControl == true)
                 {
                     //We are creating a new boat for a member
-                    if (createControl)
+                    if (createControl == true)
                     {
                         input = "boatCreate";
                     }
                     //We are deleting a boat
-                    if (deleteControl)
+                    else if (deleteControl == true)
                     {
                         input = "boatDelete";
                     }
                     //We are changing a boat
-                    if (changeControl)
+                    else if (changeControl == true)
                     {
                         input = "boatChange";
                     }
@@ -224,272 +251,9 @@ namespace Workshop2_App.controller
                     
                 }
 
-                /*
-                if (changeMemberEnterName)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.ChangeMemberEnterName;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                    }
-                    changeMemberEnterName = false;
-                    changeMemberEnterPNumber = true;
-                }
-
-                else if (changeMemberEnterPNumber)
-                {
-                    changeMember.Name = userFeedback;
-                    currentView = views.ChangeMemberEnterPNumber;
-                    changeMemberEnterPNumber = false;
-                    changeMemberSaved = true;
-                }
-
-                else if (changeMemberSaved)
-                {
-                    changeMember.PersonalNumber = userFeedback;
-                    //Save member to textfile 
-                    string writeLine = replaceMember(changeMember);
-                    
-                    writeToFile(writeLine);
-                    //Console.WriteLine(writeLine);
-
-                   
-                    currentView = views.ChangeMemberSaved;
-                    changeMemberSaved = false;
-                }
-
-                else if (lookAtMemberPick)
-                {
-                    currentView = views.LookAtMemberPick;
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.LookAtChosenMember;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        lookAtMemberPick = false;
-                    }
-                }
-
-                else if (createNewMember)
-                {
-                    changeMember.Name = userFeedback;
-                    currentView = views.CreateMemberEnterName;
-                    createNewMember = false;
-                    createMemberEnterName = true;
-                }
-
-                else if (createMemberEnterName)
-                {
-                    changeMember.PersonalNumber = userFeedback;
-                    currentView = views.CreateMemberEnterPNumber;
-                    createMemberEnterName = false;
-                    createMemberEnterPNumber = true;
-                }
-               
-                else if (createMemberEnterPNumber)
-                {
-                    //Creating a unique id for the member
-                    string uniqueId = generateId();
-                    changeMember.UniqueId = uniqueId;
-
-                    //Adding the member to the database
-                    addMember(changeMember);
-
-                    currentView = views.NewMemberCreated;
-                    createMemberEnterPNumber = false;
-                }
-
-                else if (registerNewBoat)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.registerBoatEnterType;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        registerNewBoat = false;
-                        registerBoatEnterType = true;
-                    }
-
-                }
-
-                else if (registerBoatEnterType)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            number--;
-                            currentView = views.registerBoatEnterLength;
-
-                            Boat.type boatType = ((Boat.type)number);
-
-                            changeBoat.Type = boatType;
-
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        registerBoatEnterType = false;
-                        registerBoatEnterLength = true;
-                    }
-                }
-
-                else if (registerBoatEnterLength)
-                {
-                    changeBoat.Length = userFeedback;
-                    registerBoatEnterLength = false;
-                    registerBoatForUser(changeMember, changeBoat);
-                    currentView = views.registerBoatSaved;
-                }
-
-                else if (deleteBoat)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.DeleteBoatPick;
-                            changeBoat.OrderNumber = number;
-                            string newBoatsText = deleteBoatFromDb(number);
-                            writeToFile(newBoatsText);
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        deleteBoat = false;
-                    }
-                }
-
-                else if (changeBoatPick)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            changeBoat.OrderNumber = number;
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        changeBoatPick = false;
-                        changeBoatEnterId = true;
-                    }
-                }
-
-                else if (changeBoatEnterId)
-                {
-                    currentView = views.ChangeBoatEnterId;
-                    changeBoatEnterId = false;
-                    changeBoatEnterType = true;
-                    
-                }
-
-                else if (changeBoatEnterType)
-                {
-                    currentView = views.ChangeBoatEnterType;
-                    changeBoatEnterType = false;
-                    changeBoatEnterLength = true;
-                    changeBoat.UniqueId = userFeedback;
-                    
-                }
-
-                else if (changeBoatEnterLength)
-                {
-                    changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), userFeedback);
-                    currentView = views.ChangeBoatEnterLength;
-
-                    //Updating the registry text with the updated boat
-                    string saveBoatText = saveChangedBoat(changeBoat);
-
-                    //Saving the boat to the registry
-                    writeToFile(saveBoatText);
-
-                    changeBoatEnterLength = false;
-                    changeBoatSaved = true;
-                }
-
-                else if (changeBoatSaved)
-                {
-                    currentView = views.ChangeBoatSaved;
-                    changeBoatSaved = false;
-                }
-                */
-
-                //Show the regular menu options
-                /*
-                else { 
-                    if (userFeedback == "A")
-                    {
-                        currentView = views.ListAllCompact;
-                    }
-                    else if (userFeedback == "B")
-                    {
-                        currentView = views.ListAllVerbose;
-                    }
-                    else if (userFeedback == "C")
-                    {
-                        currentView = views.CreateNewMember;
-                        createNewMember = true;
-                    }
-                    else if (userFeedback == "D")
-                    {
-                        currentView = views.ChangeMemberPick;
-                        changeMemberEnterName = true;
-                    }
-                    else if (userFeedback == "E")
-                    {
-                        currentView = views.LookAtMemberPick;
-                        lookAtMemberPick = true;
-                    }
-                    else if (userFeedback == "F")
-                    {
-                        currentView = views.RegisterNewBoat;
-                        registerNewBoat = true;
-                    }
-                    else if (userFeedback == "G")
-                    {
-                        currentView = views.DeleteBoat;
-                        deleteBoat = true;
-                    }
-                    else if (userFeedback == "H")
-                    {
-                        currentView = views.ChangeBoat;
-                        changeBoatPick = true;
-                    }
-                    else if (userFeedback == "0")
-                    {
-                        currentView = views.showFirstView;
-                    }
-                    else
-                    {
-                        currentView = views.showFirstView;
-                    }
-                }
-                */
-
                 activateView();
+                Debug.WriteLine("ActivateView() run");
+                Debug.WriteLine(" ");
                 
             } while (userFeedback != "0");
 
@@ -737,10 +501,15 @@ namespace Workshop2_App.controller
                 case views.CreateNewMember:
                     view.viewCreateNewMember();
                     break;
+                    /*
                 case views.CreateMemberEnterName:
                     view.viewCreateMemberEnterName(changeMember);
                     break;
+                    */
                 case views.CreateMemberEnterPNumber:
+                    Debug.WriteLine(" ");
+                    Debug.WriteLine("Case views.CreateMemberEnterPNumber");
+                    Debug.WriteLine(" ");
                     view.viewCreateMemberEnterPNumber(changeMember);
                     break;
                 case views.NewMemberCreated:
@@ -886,3 +655,269 @@ namespace Workshop2_App.controller
         }
     }
 }
+
+
+/*
+                if (changeMemberEnterName)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.ChangeMemberEnterName;
+                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                    }
+                    changeMemberEnterName = false;
+                    changeMemberEnterPNumber = true;
+                }
+
+                else if (changeMemberEnterPNumber)
+                {
+                    changeMember.Name = userFeedback;
+                    currentView = views.ChangeMemberEnterPNumber;
+                    changeMemberEnterPNumber = false;
+                    changeMemberSaved = true;
+                }
+
+                else if (changeMemberSaved)
+                {
+                    changeMember.PersonalNumber = userFeedback;
+                    //Save member to textfile 
+                    string writeLine = replaceMember(changeMember);
+                    
+                    writeToFile(writeLine);
+                    //Console.WriteLine(writeLine);
+
+                   
+                    currentView = views.ChangeMemberSaved;
+                    changeMemberSaved = false;
+                }
+
+                else if (lookAtMemberPick)
+                {
+                    currentView = views.LookAtMemberPick;
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.LookAtChosenMember;
+                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        lookAtMemberPick = false;
+                    }
+                }
+
+                else if (createNewMember)
+                {
+                    changeMember.Name = userFeedback;
+                    currentView = views.CreateMemberEnterName;
+                    createNewMember = false;
+                    createMemberEnterName = true;
+                }
+
+                else if (createMemberEnterName)
+                {
+                    changeMember.PersonalNumber = userFeedback;
+                    currentView = views.CreateMemberEnterPNumber;
+                    createMemberEnterName = false;
+                    createMemberEnterPNumber = true;
+                }
+               
+                else if (createMemberEnterPNumber)
+                {
+                    //Creating a unique id for the member
+                    string uniqueId = generateId();
+                    changeMember.UniqueId = uniqueId;
+
+                    //Adding the member to the database
+                    addMember(changeMember);
+
+                    currentView = views.NewMemberCreated;
+                    createMemberEnterPNumber = false;
+                }
+
+                else if (registerNewBoat)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.registerBoatEnterType;
+                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        registerNewBoat = false;
+                        registerBoatEnterType = true;
+                    }
+
+                }
+
+                else if (registerBoatEnterType)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            number--;
+                            currentView = views.registerBoatEnterLength;
+
+                            Boat.type boatType = ((Boat.type)number);
+
+                            changeBoat.Type = boatType;
+
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        registerBoatEnterType = false;
+                        registerBoatEnterLength = true;
+                    }
+                }
+
+                else if (registerBoatEnterLength)
+                {
+                    changeBoat.Length = userFeedback;
+                    registerBoatEnterLength = false;
+                    registerBoatForUser(changeMember, changeBoat);
+                    currentView = views.registerBoatSaved;
+                }
+
+                else if (deleteBoat)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            currentView = views.DeleteBoatPick;
+                            changeBoat.OrderNumber = number;
+                            string newBoatsText = deleteBoatFromDb(number);
+                            writeToFile(newBoatsText);
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        deleteBoat = false;
+                    }
+                }
+
+                else if (changeBoatPick)
+                {
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            changeBoat.OrderNumber = number;
+                        }
+                        else
+                        {
+                            currentView = views.showFirstView;
+                        }
+                        changeBoatPick = false;
+                        changeBoatEnterId = true;
+                    }
+                }
+
+                else if (changeBoatEnterId)
+                {
+                    currentView = views.ChangeBoatEnterId;
+                    changeBoatEnterId = false;
+                    changeBoatEnterType = true;
+                    
+                }
+
+                else if (changeBoatEnterType)
+                {
+                    currentView = views.ChangeBoatEnterType;
+                    changeBoatEnterType = false;
+                    changeBoatEnterLength = true;
+                    changeBoat.UniqueId = userFeedback;
+                    
+                }
+
+                else if (changeBoatEnterLength)
+                {
+                    changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), userFeedback);
+                    currentView = views.ChangeBoatEnterLength;
+
+                    //Updating the registry text with the updated boat
+                    string saveBoatText = saveChangedBoat(changeBoat);
+
+                    //Saving the boat to the registry
+                    writeToFile(saveBoatText);
+
+                    changeBoatEnterLength = false;
+                    changeBoatSaved = true;
+                }
+
+                else if (changeBoatSaved)
+                {
+                    currentView = views.ChangeBoatSaved;
+                    changeBoatSaved = false;
+                }
+                */
+
+//Show the regular menu options
+/*
+else { 
+    if (userFeedback == "A")
+    {
+        currentView = views.ListAllCompact;
+    }
+    else if (userFeedback == "B")
+    {
+        currentView = views.ListAllVerbose;
+    }
+    else if (userFeedback == "C")
+    {
+        currentView = views.CreateNewMember;
+        createNewMember = true;
+    }
+    else if (userFeedback == "D")
+    {
+        currentView = views.ChangeMemberPick;
+        changeMemberEnterName = true;
+    }
+    else if (userFeedback == "E")
+    {
+        currentView = views.LookAtMemberPick;
+        lookAtMemberPick = true;
+    }
+    else if (userFeedback == "F")
+    {
+        currentView = views.RegisterNewBoat;
+        registerNewBoat = true;
+    }
+    else if (userFeedback == "G")
+    {
+        currentView = views.DeleteBoat;
+        deleteBoat = true;
+    }
+    else if (userFeedback == "H")
+    {
+        currentView = views.ChangeBoat;
+        changeBoatPick = true;
+    }
+    else if (userFeedback == "0")
+    {
+        currentView = views.showFirstView;
+    }
+    else
+    {
+        currentView = views.showFirstView;
+    }
+}
+*/

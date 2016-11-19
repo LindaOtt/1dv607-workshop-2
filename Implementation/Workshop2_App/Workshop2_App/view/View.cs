@@ -76,16 +76,17 @@ namespace Workshop2_App.view
         public void viewCreateNewMember()
         {
             Console.WriteLine("\nYou've chosen to create a new member.");
-            Console.WriteLine("\nEnter the name of the member");
+            Console.WriteLine("Enter the name of the member:");
         }
 
-        public void viewCreateMemberEnterName(Member member)
+
+        public void viewCreateMemberEnterPNumber(Member member)
         {
             Console.WriteLine("\nYou've entered the name {0}", member.Name);
             Console.WriteLine("\nEnter the personal number of the member and click enter to save the new member:");
         }
 
-        public void viewCreateMemberEnterPNumber(Member member)
+        public void viewCreateMemberSave(Member member)
         {
             Console.WriteLine("\nYou've entered the name {0} and the personal number {1}", member.Name, member.PersonalNumber);
             Console.WriteLine("\nClick enter to save the member:");

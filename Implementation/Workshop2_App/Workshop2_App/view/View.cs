@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workshop2_App.model;
+using System.Diagnostics;
 
 namespace Workshop2_App.view
 {
@@ -117,6 +118,7 @@ namespace Workshop2_App.view
 
         public void viewChangeMemberEnterName(Member member)
         {
+            Debug.WriteLine("Inside view.viewChangeMemberEnterName");
             Console.WriteLine("\nYou have chosen to change the member with unique id {0}", member.UniqueId);
             Console.WriteLine("\nEnter the new name for the member: ");
             

@@ -15,7 +15,7 @@ namespace Workshop2_App.controller
         private string userFeedback;
         int number;
         private Member member;
-        private MemberList memberList;
+        private MemberList memberList = new MemberList();
 
         public Member getMember()
         {
@@ -31,22 +31,34 @@ namespace Workshop2_App.controller
             switch (input)
             {
                 case "memberEnterName":
-                    Debug.WriteLine("input: memberEnterName");
-                    Debug.Write("userFeedback Name: ");
-                    Debug.Write(userFeedback);
                     changeMember.Name = userFeedback;
                     break;
                 case "memberEnterPNumber":
-                    Debug.WriteLine("inputFromUser: memberEnterPNumber");
+                
                     changeMember.PersonalNumber = userFeedback;
                     break;
                 case "memberCreateSave":
-                    Debug.WriteLine("inputFromUser: memberCreateSave");
                     changeMember.UniqueId = userFeedback;
                     break;
+                case "memberChangeSetId":
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            Debug.Write("The user entered the number ");
+                            Debug.Write(userFeedback);
+                            Debug.WriteLine(" ");
+                            string uniqueId = this.memberList.getUniqueId(Int32.Parse(userFeedback));
+                            changeMember.UniqueId = uniqueId;
+                            //changeMember.UniqueId = "000";
+                        }
+                    }
+                    break;
                 case "memberChangeName":
+                    changeMember.Name = userFeedback;
                     break;
                 case "memberChangePNumber":
+                    changeMember.PersonalNumber = userFeedback;
                     break;
                 case "memberLookAtPick":
                     break;

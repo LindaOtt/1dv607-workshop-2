@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Workshop2_App.model
 {
@@ -109,6 +110,8 @@ namespace Workshop2_App.model
 
         public string getUniqueId(int memberNumber)
         {
+
+            Debug.WriteLine("Inside getUniqueId");
             string uniqueId = "";
 
             int counter = 1;

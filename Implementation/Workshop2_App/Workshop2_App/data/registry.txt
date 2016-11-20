@@ -1,9 +1,5 @@
 #Members
-636151558746678951, A, 7878780000
-
-636151558621149080, ELLA BELLA BINGO, 7878781111
-
-quUUukkq7d, Elsa Elving, 2510154122
+quUUukkq7d, LOVA TESTSSON, 7878780000
 lkqIhq45df, Ylva Djurhage, 1401205281
 438Hwhhird, Erika Mandala, 4706014821
 #
@@ -14,4 +10,5 @@ lkqIhq45df, Motorsailer, 3
 438Hwhhird, Canoe, 4
 lkqIhq45df, Other, 6 
 ##
+
 

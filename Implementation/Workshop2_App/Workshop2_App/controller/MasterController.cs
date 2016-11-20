@@ -109,13 +109,14 @@ namespace Workshop2_App.controller
                 //We are working on a member
                 if (memberControl == true)
                 {
+                    Debug.WriteLine("Inside memberControl");
                     //We are creating a new member
                     if (createControl == true)
                     {
                         //We are entering the name for a new member
                         if (enterNameControl == true)
                         {
-                            Debug.WriteLine("Inside enterNameControl");
+                            
                             input = "memberEnterName";
                             memberController.setMemberFromInput(input, userFeedback, changeMember);
                             changeMember = memberController.getMember();
@@ -127,8 +128,7 @@ namespace Workshop2_App.controller
                         //We are entering the personal number for a new member
                         else if (enterPNumberControl == true)
                         {
-                            Debug.WriteLine(" ");
-                            Debug.WriteLine("Inside enterPNumberControl");
+                            
                             input = "memberEnterPNumber";
                             
                             memberController.setMemberFromInput(input, userFeedback, changeMember);
@@ -156,21 +156,61 @@ namespace Workshop2_App.controller
                     //We are changing a member
                     else if (changeControl == true)
                     {
-                         //We are changing the name for a member
-                        if (enterNameControl == true)
+                        Debug.WriteLine("Inside changeControl");
+                        //We are picking the member to change
+                        if (pickControl == true)
                         {
+                            Debug.WriteLine("Inside pickControl");
+                            input = "memberChangeSetId";
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            changeMember = memberController.getMember();
+                            pickControl = false;
+                            enterNameControl = true;
+                            currentView = views.ChangeMemberEnterName;
+                        }
+                        //We are changing the name for a member
+                        else if (enterNameControl == true)
+                        {
+                            Debug.WriteLine("Inside enterNameControl");
                             input = "memberChangeName";
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            //changeMember = memberController.getMember();
+                            enterNameControl = false;
+                            enterPNumberControl = true;
+                            currentView = views.ChangeMemberEnterPNumber;
                         }
                         //We are changing the personal number for a member
                         else if (enterPNumberControl == true)
                         {
+                            Debug.WriteLine("Inside enterPNumberControl");
                             input = "memberChangePNumber";
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            changeMember = memberController.getMember();
+
+                            //Checking that member is ok
+                            Debug.WriteLine(changeMember.Name);
+                            Debug.WriteLine(changeMember.PersonalNumber);
+                            Debug.WriteLine(changeMember.UniqueId);
+
+                            //Save member to textfile 
+                            string writeLine = replaceMember(changeMember);
+
+                            writeToFile(writeLine);
+                            memberControl = false;
+                            changeControl = false;
+
+                            enterPNumberControl = false;
+                            currentView = views.ChangeMemberSaved;
                         }
                         //We are saving the member
+                        /*
                         else if (saveControl == true)
                         {
-                            input = "memberSave";
+                            Debug.WriteLine("Inside saveControl");
+
+                           
                         }
+                        */
                     }
                     //We are looking at a member
                     else if (lookControl)
@@ -222,6 +262,9 @@ namespace Workshop2_App.controller
                             break;
                         case "D":
                             currentView = views.ChangeMemberPick;
+                            memberControl = true;
+                            changeControl = true;
+                            pickControl = true;
                             break;
                         case "E":
                             currentView = views.LookAtMemberPick;
@@ -501,11 +544,6 @@ namespace Workshop2_App.controller
                 case views.CreateNewMember:
                     view.viewCreateNewMember();
                     break;
-                    /*
-                case views.CreateMemberEnterName:
-                    view.viewCreateMemberEnterName(changeMember);
-                    break;
-                    */
                 case views.CreateMemberEnterPNumber:
                     Debug.WriteLine(" ");
                     Debug.WriteLine("Case views.CreateMemberEnterPNumber");
@@ -519,6 +557,9 @@ namespace Workshop2_App.controller
                     view.viewChangeMemberPick();
                     break;
                 case views.ChangeMemberEnterName:
+                    Debug.WriteLine(" ");
+                    Debug.WriteLine("Case views.ChangeMemberEnterName");
+                    Debug.WriteLine(" ");
                     view.viewChangeMemberEnterName(changeMember);
                     break;
                 case views.ChangeMemberEnterPNumber:

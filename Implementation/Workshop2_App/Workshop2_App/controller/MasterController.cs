@@ -35,6 +35,7 @@ namespace Workshop2_App.controller
             LookAtChosenMember,
             RegisterNewBoat,
             DeleteBoat,
+            DeleteBoatSave,
             DeleteBoatPick,
             DeletedBoat,
             ChangeBoat,
@@ -78,6 +79,10 @@ namespace Workshop2_App.controller
         private bool enterNameControl = false; //Shows if we are entering a name
         private bool enterPNumberControl = false; //Shows if we are entering a personal number
         private bool saveControl = false; //Shows if we are saving something
+        private bool typeControl = false; //Shows that we are entering the type of something
+        private bool lengthControl = false; //Shows that we are entering the length of something
+
+        private bool showByeMsg = false;
 
         private Member changeMember = new Member();
         private Boat changeBoat = new Boat();
@@ -202,24 +207,27 @@ namespace Workshop2_App.controller
                             enterPNumberControl = false;
                             currentView = views.ChangeMemberSaved;
                         }
-                        //We are saving the member
-                        /*
-                        else if (saveControl == true)
-                        {
-                            Debug.WriteLine("Inside saveControl");
-
-                           
-                        }
-                        */
                     }
                     //We are looking at a member
-                    else if (lookControl)
+                    else if (lookControl == true)
                     {
                         //We are picking a member to look at
-                        if (pickControl)
+                        if (pickControl == true)
                         {
-                            input = "memberLookAtPick";
+                            Debug.WriteLine("Inside pickControl");
+                            input = "memberChangeSetId";
+                            
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            changeMember = memberController.getMember();
+
+                            currentView = views.LookAtChosenMember;
+
+                            memberControl = false;
+                            lookControl = false;
+                            pickControl = false;
                         }
+
+                       
                     }
                     
                     Debug.WriteLine("changeMember name: {0}", changeMember.Name);
@@ -229,12 +237,76 @@ namespace Workshop2_App.controller
                     //We are creating a new boat for a member
                     if (createControl == true)
                     {
-                        input = "boatCreate";
+                        if (pickControl == true)
+                        {
+                            input = "memberChangeSetId";
+                            memberController.setMemberFromInput(input, userFeedback, changeMember);
+                            changeMember = memberController.getMember();
+
+                            currentView = views.registerBoatEnterType;
+
+                            pickControl = false;
+                            typeControl = true;
+                        }
+
+                        else if (typeControl == true)
+                        {
+                            input = "boatChangeSetType";
+                            boatController.setBoatFromInput(input, userFeedback, changeBoat);
+                            changeBoat = boatController.getBoat();
+
+                            currentView = views.registerBoatEnterLength;
+
+                           
+
+                            typeControl = false;
+                            lengthControl = true;
+                        }
+
+                        else if (lengthControl == true)
+                        {
+                            input = "boatChangeSetLength";
+                            boatController.setBoatFromInput(input, userFeedback, changeBoat);
+
+                            changeBoat = boatController.getBoat();
+
+                            registerBoatForUser(changeMember, changeBoat);
+
+                            currentView = views.registerBoatSaved;
+
+                            boatControl = false;
+                            lengthControl = false;
+                        }
                     }
                     //We are deleting a boat
                     else if (deleteControl == true)
                     {
-                        input = "boatDelete";
+
+                        if (pickControl == true)
+                        {
+                            int number;
+                            if (Int32.TryParse(userFeedback, out number))
+                            {
+                                if (number > 0)
+                                {
+                                    input = "boatDeletePick";
+
+                                    boatController.setBoatFromInput(input, userFeedback, changeBoat);
+
+                                    changeBoat = boatController.getBoat();
+
+                                    changeBoat.OrderNumber = number;
+                                    string newBoatsText = deleteBoatFromDb(number);
+
+                                    writeToFile(newBoatsText);
+                                    currentView = views.DeleteBoatSave;
+                                }
+                            }
+                            boatControl = false;
+                            pickControl = false;
+                        }
+
+                        deleteControl = false;
                     }
                     //We are changing a boat
                     else if (changeControl == true)
@@ -242,7 +314,6 @@ namespace Workshop2_App.controller
                         input = "boatChange";
                     }
                     Debug.WriteLine("input: {0}", input);
-                    changeBoat = boatController.getBoat(input, userFeedback);
                 }
                 else {
 
@@ -268,17 +339,21 @@ namespace Workshop2_App.controller
                             break;
                         case "E":
                             currentView = views.LookAtMemberPick;
-                            //lookAtMemberPick = true;
                             memberControl = true;
                             lookControl = true;
+                            pickControl = true;
                             break;
                         case "F":
                             currentView = views.RegisterNewBoat;
-                            registerNewBoat = true;
+                            boatControl = true;
+                            createControl = true;
+                            pickControl = true;
                             break;
                         case "G":
-                            currentView = views.DeleteBoat;
-                            deleteBoat = true;
+                            currentView = views.DeleteBoatPick;
+                            boatControl = true;
+                            deleteControl = true;
+                            pickControl = true;
                             break;
                         case "H":
                             currentView = views.ChangeBoat;
@@ -294,7 +369,11 @@ namespace Workshop2_App.controller
                     
                 }
 
-                activateView();
+                if (userFeedback == "0")
+                {
+                    showByeMsg = true;
+                }
+                activateView(showByeMsg);
                 Debug.WriteLine("ActivateView() run");
                 Debug.WriteLine(" ");
                 
@@ -524,94 +603,101 @@ namespace Workshop2_App.controller
             }
         }
 
-        public void activateView()
+        public void activateView(bool showByeMsg)
         {
 
             View view = new View();
-            view.viewStart();
-
-            //Checking to see which view should be shown
-            switch (currentView)
+            if (showByeMsg)
             {
-                case views.showFirstView:
-                    break;
-                case views.ListAllCompact:
-                    view.viewListAllCompact();
-                    break;
-                case views.ListAllVerbose:
-                    view.viewListAllVerbose();
-                    break;
-                case views.CreateNewMember:
-                    view.viewCreateNewMember();
-                    break;
-                case views.CreateMemberEnterPNumber:
-                    Debug.WriteLine(" ");
-                    Debug.WriteLine("Case views.CreateMemberEnterPNumber");
-                    Debug.WriteLine(" ");
-                    view.viewCreateMemberEnterPNumber(changeMember);
-                    break;
-                case views.NewMemberCreated:
-                    view.newMemberCreated(changeMember);
-                    break;
-                case views.ChangeMemberPick:
-                    view.viewChangeMemberPick();
-                    break;
-                case views.ChangeMemberEnterName:
-                    Debug.WriteLine(" ");
-                    Debug.WriteLine("Case views.ChangeMemberEnterName");
-                    Debug.WriteLine(" ");
-                    view.viewChangeMemberEnterName(changeMember);
-                    break;
-                case views.ChangeMemberEnterPNumber:
-                    view.viewChangeMemberEnterPNumber(changeMember);
-                    break;
-                case views.ChangeMemberSaved:
-                    view.viewChangeMemberSaved(changeMember);
-                    break;
-                case views.LookAtMemberPick:
-                    view.viewLookAtMemberPick();
-                    break;
-                case views.LookAtChosenMember:
-                    view.viewLookAtChosenMember(changeMember);
-                    break;
-                case views.RegisterNewBoat:
-                    view.viewRegisterNewBoat();
-                    break;
-                case views.DeleteBoat:
-                    view.viewDeleteBoat();
-                    break;
-                case views.DeleteBoatPick:
-                    view.viewDeleteBoatPick(changeBoat);
-                    break;
-                case views.ChangeBoat:
-                    view.viewChangeBoat();
-                    break;
-                case views.registerBoatEnterType:
-                    view.registerBoatEnterType(changeMember, changeBoat);
-                    break;
-                case views.registerBoatEnterLength:
-                    view.registerBoatEnterLength(changeMember, changeBoat);
-                    break;
-                case views.registerBoatSaved:
-                    view.registerBoatSaved(changeMember, changeBoat);
-                    break;
-                case views.ChangeBoatEnterId:
-                    view.changeBoatEnterId(changeBoat);
-                    break;
-                case views.ChangeBoatEnterType:
-                    view.changeBoatEnterType(changeBoat);
-                    break;
-                case views.ChangeBoatEnterLength:
-                    view.changeBoatEnterLength(changeBoat);
-                    break;
-                case views.ChangeBoatSaved:
-                    view.changeBoatSaved(changeBoat);
-                    break;
-                case views.WrongInput:
-                    view.viewWrongInput();
-                    break;
-                default:
-                    break;
+                view.viewBye();
+            }
+            else
+            {
+                view.viewStart();
+
+                //Checking to see which view should be shown
+                switch (currentView)
+                {
+                    case views.showFirstView:
+                        break;
+                    case views.ListAllCompact:
+                        view.viewListAllCompact();
+                        break;
+                    case views.ListAllVerbose:
+                        view.viewListAllVerbose();
+                        break;
+                    case views.CreateNewMember:
+                        view.viewCreateNewMember();
+                        break;
+                    case views.CreateMemberEnterPNumber:
+                        Debug.WriteLine(" ");
+                        Debug.WriteLine("Case views.CreateMemberEnterPNumber");
+                        Debug.WriteLine(" ");
+                        view.viewCreateMemberEnterPNumber(changeMember);
+                        break;
+                    case views.NewMemberCreated:
+                        view.newMemberCreated(changeMember);
+                        break;
+                    case views.ChangeMemberPick:
+                        view.viewChangeMemberPick();
+                        break;
+                    case views.ChangeMemberEnterName:
+                        Debug.WriteLine(" ");
+                        Debug.WriteLine("Case views.ChangeMemberEnterName");
+                        Debug.WriteLine(" ");
+                        view.viewChangeMemberEnterName(changeMember);
+                        break;
+                    case views.ChangeMemberEnterPNumber:
+                        view.viewChangeMemberEnterPNumber(changeMember);
+                        break;
+                    case views.ChangeMemberSaved:
+                        view.viewChangeMemberSaved(changeMember);
+                        break;
+                    case views.LookAtMemberPick:
+                        view.viewLookAtMemberPick();
+                        break;
+                    case views.LookAtChosenMember:
+                        view.viewLookAtChosenMember(changeMember);
+                        break;
+                    case views.RegisterNewBoat:
+                        view.viewRegisterNewBoat();
+                        break;
+                    case views.DeleteBoatPick:
+                        view.viewDeleteBoatPick();
+                        break;
+                    case views.DeleteBoatSave:
+                        view.viewDeleteBoatSave(changeBoat);
+                        break;
+                    case views.ChangeBoat:
+                        view.viewChangeBoat();
+                        break;
+                    case views.registerBoatEnterType:
+                        view.registerBoatEnterType(changeMember, changeBoat);
+                        break;
+                    case views.registerBoatEnterLength:
+                        view.registerBoatEnterLength(changeMember, changeBoat);
+                        break;
+                    case views.registerBoatSaved:
+                        view.registerBoatSaved(changeMember, changeBoat);
+                        break;
+                    case views.ChangeBoatEnterId:
+                        view.changeBoatEnterId(changeBoat);
+                        break;
+                    case views.ChangeBoatEnterType:
+                        view.changeBoatEnterType(changeBoat);
+                        break;
+                    case views.ChangeBoatEnterLength:
+                        view.changeBoatEnterLength(changeBoat);
+                        break;
+                    case views.ChangeBoatSaved:
+                        view.changeBoatSaved(changeBoat);
+                        break;
+                    case views.WrongInput:
+                        view.viewWrongInput();
+                        break;
+                    default:
+                        break;
+                }
             }
 
         }

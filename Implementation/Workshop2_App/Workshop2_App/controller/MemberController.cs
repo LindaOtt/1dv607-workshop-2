@@ -61,6 +61,14 @@ namespace Workshop2_App.controller
                     changeMember.PersonalNumber = userFeedback;
                     break;
                 case "memberLookAtPick":
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            
+                            changeMember.UniqueId = this.memberList.getUniqueId(Int32.Parse(userFeedback));
+                        }
+                    }
                     break;
                 default:
                     Debug.WriteLine("inputFromUser: default");

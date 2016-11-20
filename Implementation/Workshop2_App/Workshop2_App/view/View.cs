@@ -37,6 +37,12 @@ namespace Workshop2_App.view
             Console.WriteLine("H. Change a boat's information");
         }
 
+        public void viewBye()
+        {
+            Console.Clear();
+            Console.WriteLine("Goodbye user, and thanks for all the fish!");
+        }
+
         public void viewListAllCompact()
         {
             
@@ -220,7 +226,7 @@ namespace Workshop2_App.view
             Console.WriteLine("\nA new boat was added for member {0}, with the type {1} and length {2}", member.UniqueId, boat.Type, boat.Length);
         }
 
-        public void viewDeleteBoat()
+        public void viewDeleteBoatPick()
         {
             Console.WriteLine("\nYou've chosen to delete a boat");
             Console.WriteLine("So please pick the boat you want to delete from the list below:");
@@ -237,7 +243,7 @@ namespace Workshop2_App.view
             }
         }
 
-        public void viewDeleteBoatPick(Boat boat)
+        public void viewDeleteBoatSave(Boat boat)
         {
             Console.WriteLine("You've deleted the boat with order number {0}", boat.OrderNumber ); 
         }

@@ -5,27 +5,59 @@ using System.Text;
 using System.Threading.Tasks;
 using Workshop2_App.view;
 using Workshop2_App.model;
+using System.Diagnostics;
 
 namespace Workshop2_App.controller
 {
     class BoatController
     {
         private string inputFromUser;
+        private string userFeedback;
+        int number;
+        private Boat boat;
+        private BoatList boatList = new BoatList();
 
-        private View view;
-
-        private Boat changeBoat;
-
-        public Boat getBoat(string input, string userFeedback)
+        public Boat getBoat()
         {
-            inputFromUser = input;
-            return changeBoat;
+            return boat;
         }
 
-        public View getView(string input)
+        public void setBoatFromInput(string input, string userFeedback, Boat changeBoat)
         {
-            inputFromUser = input;
-            return view;
+            switch (input)
+            {
+                case "boatChangeSetType":
+                    if (Int32.TryParse(userFeedback, out number))
+                    {
+                        if (number > 0)
+                        {
+                            number--;
+
+                            Boat.type boatType = ((Boat.type)number);
+
+                            changeBoat.Type = boatType;
+
+                        }
+                    }
+                    break;
+
+                case "boatChangeSetLength":
+                    changeBoat.Length = userFeedback;
+                    break;
+
+                case "boatDeletePick":
+                    
+                    changeBoat.OrderNumber = number;
+                    break;
+
+
+                default:
+                    Debug.WriteLine("inputFromUser: default");
+                    break;
+            }
+
+            boat = changeBoat;
         }
+        
     }
 }

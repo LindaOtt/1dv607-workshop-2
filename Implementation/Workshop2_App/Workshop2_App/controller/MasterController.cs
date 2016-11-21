@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Workshop2_App.view;
 using Workshop2_App.model;
 using System.Diagnostics;
@@ -48,24 +44,6 @@ namespace Workshop2_App.controller
             registerBoatSaved,
             WrongInput
         };
-
-        //Old state variables
-        private bool changeMemberEnterName = false;
-        private bool changeMemberEnterPNumber = false;
-        private bool changeMemberSaved = false;
-        private bool lookAtMemberPick = false;
-        private bool createNewMember = false;
-        private bool createMemberEnterName = false;
-        private bool createMemberEnterPNumber = false;
-        private bool registerNewBoat = false;
-        private bool registerBoatEnterType = false;
-        private bool registerBoatEnterLength = false;
-        private bool deleteBoat = false;
-        private bool changeBoatPick = false;
-        private bool changeBoatEnterId = false;
-        private bool changeBoatEnterType = false;
-        private bool changeBoatEnterLength = false;
-        private bool changeBoatSaved = false;
         
         //New state variables
         private bool memberControl = false; //Shows if we are working on members
@@ -73,12 +51,10 @@ namespace Workshop2_App.controller
         private bool createControl = false; //Shows if we are creating something
         private bool changeControl = false; //Shows if we are changing something
         private bool deleteControl = false; //Shows if we are deleting something
-        private bool pnumberControl = false; //Shows if we are working on personal number
         private bool lookControl = false; //Shows if we are looking at something
         private bool pickControl = false; //Shows if we are picking something from a list
         private bool enterNameControl = false; //Shows if we are entering a name
         private bool enterPNumberControl = false; //Shows if we are entering a personal number
-        private bool saveControl = false; //Shows if we are saving something
         private bool typeControl = false; //Shows that we are entering the type of something
         private bool lengthControl = false; //Shows that we are entering the length of something
         private bool idControl = false; //Shows that we are entering the id of something
@@ -150,23 +126,23 @@ namespace Workshop2_App.controller
                             enterPNumberControl = false;
 
                             //Adding the member to the database
-                            addMember(changeMember);
+                            string newText = memberController.addMember(changeMember);
+                            
+                            //Adding the new text to the registry
+                            writeToFile(newText);
 
                             memberControl = false;
                             createControl = false;
 
-                            Debug.WriteLine("Member name: {0}, personal number: {1}, unique id: {2}", changeMember.Name, changeMember.PersonalNumber, changeMember.UniqueId);
                             currentView = views.NewMemberCreated;
                         }
                     }
                     //We are changing a member
                     else if (changeControl == true)
                     {
-                        Debug.WriteLine("Inside changeControl");
                         //We are picking the member to change
                         if (pickControl == true)
                         {
-                            Debug.WriteLine("Inside pickControl");
                             input = "memberChangeSetId";
                             memberController.setMemberFromInput(input, userFeedback, changeMember);
                             changeMember = memberController.getMember();
@@ -177,7 +153,6 @@ namespace Workshop2_App.controller
                         //We are changing the name for a member
                         else if (enterNameControl == true)
                         {
-                            Debug.WriteLine("Inside enterNameControl");
                             input = "memberChangeName";
                             memberController.setMemberFromInput(input, userFeedback, changeMember);
                             //changeMember = memberController.getMember();
@@ -199,7 +174,7 @@ namespace Workshop2_App.controller
                             Debug.WriteLine(changeMember.UniqueId);
 
                             //Save member to textfile 
-                            string writeLine = replaceMember(changeMember);
+                            string writeLine = memberController.replaceMember(changeMember);
 
                             writeToFile(writeLine);
                             memberControl = false;
@@ -297,7 +272,7 @@ namespace Workshop2_App.controller
                                     changeBoat = boatController.getBoat();
 
                                     changeBoat.OrderNumber = number;
-                                    string newBoatsText = deleteBoatFromDb(number);
+                                    string newBoatsText = boatController.deleteBoatFromDb(number);
 
                                     writeToFile(newBoatsText);
                                     currentView = views.DeleteBoatSave;
@@ -363,7 +338,7 @@ namespace Workshop2_App.controller
 
                             //Saving the boat
                             //Updating the registry text with the updated boat
-                            string saveBoatText = saveChangedBoat(changeBoat);
+                            string saveBoatText = boatController.saveChangedBoat(changeBoat);
 
                             //Saving the boat to the registry
                             writeToFile(saveBoatText);
@@ -446,6 +421,7 @@ namespace Workshop2_App.controller
 
         }
 
+        /*
         public void addMember(Member member)
         {
             // Put the entire registry into a string
@@ -463,6 +439,7 @@ namespace Workshop2_App.controller
             //Adding the new text to the registry
             writeToFile(newText);
         }
+        */
 
         public void registerBoatForUser(Member member, Boat boat)
         {
@@ -491,6 +468,7 @@ namespace Workshop2_App.controller
             writeToFile(newText);
         }
         
+        /*
         public string replaceMember(Member newMember)
         {
             string memberId = newMember.UniqueId;
@@ -589,7 +567,8 @@ namespace Workshop2_App.controller
                 return writeLine;
             }
         }
-
+        */
+        /*
         public string saveChangedBoat(Boat boat)
         {
             //Read the text file
@@ -668,6 +647,7 @@ namespace Workshop2_App.controller
             Debug.WriteLine(" ");
             return writeLine;
         }
+        */
 
         public string getInfoFromDb()
         {
@@ -788,62 +768,6 @@ namespace Workshop2_App.controller
 
         }
 
-        public string deleteBoatFromDb(int orderNumber)
-        {
-            string line = "";
-            string writeLine = "";
-            bool boatsFound = false;
-            
-            try
-            {   //Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader("..\\..\\data\\registry.txt"))
-                {
-                    int counter = 0;
-                    //Read the stream line by line
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        //Find the members
-                        if (line == "#Boats")
-                        {
-                            counter = 0;
-                            boatsFound = true;
-                            writeLine = writeLine + line + "@";
-                        }
-                        else if (line == "##")
-                        {
-                            boatsFound = false;
-                            writeLine = writeLine + line + "@";
-                        }
-                        else
-                        { 
-                            if (boatsFound)
-                            {
-                                if (counter != orderNumber)
-                                {
-                                    writeLine = writeLine + line + "@";
-                                }
-                                
-                            }
-                            else
-                            {
-                                writeLine = writeLine + line + "@";
-                            }
-
-                        }//End else
-                        counter++;
-                    }//End while
-
-                }
-                return writeLine;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-                return writeLine;
-            }
-        }
-
         public void writeToFile(string message)
         {
             // Write the string to a file.
@@ -862,10 +786,6 @@ namespace Workshop2_App.controller
         }
 
 
-        public static T ParseEnum<T>(string value)
-        {
-            return (T)Enum.Parse(typeof(T), value, true);
-        }
     }
 }
 

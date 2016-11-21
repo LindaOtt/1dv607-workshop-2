@@ -291,7 +291,7 @@ namespace Workshop2_App.view
         public void changeBoatEnterLength(Boat boat)
         {
             Console.WriteLine("\nYou've chosen to change the boat with the order number {0} to have the member id {1} and the type {2}", boat.OrderNumber, boat.UniqueId, boat.Type);
-            Console.WriteLine("The boat has been saved.");
+            Console.WriteLine("Please enter the new length of the boat:");
             
         }
 

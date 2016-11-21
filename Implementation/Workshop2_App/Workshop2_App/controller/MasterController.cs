@@ -81,6 +81,7 @@ namespace Workshop2_App.controller
         private bool saveControl = false; //Shows if we are saving something
         private bool typeControl = false; //Shows that we are entering the type of something
         private bool lengthControl = false; //Shows that we are entering the length of something
+        private bool idControl = false; //Shows that we are entering the id of something
 
         private bool showByeMsg = false;
 
@@ -249,15 +250,15 @@ namespace Workshop2_App.controller
                             typeControl = true;
                         }
 
+
                         else if (typeControl == true)
                         {
+                            Debug.WriteLine("Inside typeControl");
                             input = "boatChangeSetType";
                             boatController.setBoatFromInput(input, userFeedback, changeBoat);
                             changeBoat = boatController.getBoat();
 
                             currentView = views.registerBoatEnterLength;
-
-                           
 
                             typeControl = false;
                             lengthControl = true;
@@ -311,7 +312,69 @@ namespace Workshop2_App.controller
                     //We are changing a boat
                     else if (changeControl == true)
                     {
-                        input = "boatChange";
+                        if (pickControl == true)
+                        {
+                            input = "boatChangeSetOrderNr";
+                            //Setting order number for the boat
+                            boatController.setBoatFromInput(input, userFeedback, changeBoat);
+
+                            changeBoat = boatController.getBoat();
+                            Debug.Write("changeBoat: ");
+                            Debug.Write(changeBoat.OrderNumber);
+                            Debug.WriteLine("");
+                            currentView = views.ChangeBoatEnterId;
+                            pickControl = false;
+                            idControl = true;
+
+                        }
+
+
+                        else if (idControl == true)
+                        {
+                            input = "boatChangeSetId";
+
+                            boatController.setBoatFromInput(input, userFeedback, changeBoat);
+
+                            changeBoat = boatController.getBoat();
+
+                            currentView = views.ChangeBoatEnterType;
+                            idControl = false;
+                            typeControl = true;
+                        }
+
+                        else if (typeControl == true)
+                        {
+                            input = "boatChangeSetType";
+                            //Setting type for the boat
+                            boatController.setBoatFromInput(input, userFeedback, changeBoat);
+                            changeBoat = boatController.getBoat();
+
+                            currentView = views.ChangeBoatEnterLength;
+                            typeControl = false;
+                            lengthControl = true;
+                        }
+                        else if (lengthControl == true)
+                        {
+                            input = "boatChangeSetLength";
+
+                            //Setting length for the boat
+                            boatController.setBoatFromInput(input, userFeedback, changeBoat);
+                            changeBoat = boatController.getBoat();
+
+                            //Saving the boat
+                            //Updating the registry text with the updated boat
+                            string saveBoatText = saveChangedBoat(changeBoat);
+
+                            //Saving the boat to the registry
+                            writeToFile(saveBoatText);
+
+                            currentView = views.ChangeBoatSaved;
+
+                            boatControl = false;
+                            changeControl = false;
+                            lengthControl = false;
+                            
+                        }
                     }
                     Debug.WriteLine("input: {0}", input);
                 }
@@ -357,7 +420,9 @@ namespace Workshop2_App.controller
                             break;
                         case "H":
                             currentView = views.ChangeBoat;
-                            changeBoatPick = true;
+                            boatControl = true;
+                            changeControl = true;
+                            pickControl = true;
                             break;
                         case "0":
                             currentView = views.showFirstView;
@@ -542,7 +607,7 @@ namespace Workshop2_App.controller
                 if (line == "#Boats")
                 {
                     boatsFound = true;
-                    counter = 1;
+                    counter = 0;
                     writeLine = writeLine + line;
                 }
                 else if (line == "##")
@@ -555,9 +620,19 @@ namespace Workshop2_App.controller
                 {
                     if (boatsFound == true)
                     {
+                        Debug.WriteLine(" ");
+                        Debug.Write("Boat ordernumber: ");
+                        Debug.Write(boat.OrderNumber);
+                        Debug.WriteLine(" ");
+
+                        Debug.WriteLine(" ");
+                        Debug.Write("Counter: ");
+                        Debug.Write(counter);
+                        Debug.WriteLine(" ");
                         //This is the boat that needs to be replaced
                         if (counter == boat.OrderNumber) {
-                            writeLine = writeLine + "@" + boat.UniqueId + ", " + boat.Type + ", " + "boat.Length";
+                            Debug.WriteLine("Counter equals boat.OrderNumber");
+                            writeLine = writeLine + "@" + boat.UniqueId + ", " + boat.Type + ", " + boat.Length;
                         }
                         else
                         {
@@ -571,6 +646,14 @@ namespace Workshop2_App.controller
                         {
                             writeLine = writeLine + line;
                         }
+                        else if (line == " ")
+                        {
+                            writeLine = writeLine + "@" + "@";
+                        }
+                        else if (line == "")
+                        {
+                            writeLine = writeLine + "@" + "@";
+                        }
                         else { 
                             writeLine = writeLine + "@" + line;
                         }
@@ -580,6 +663,9 @@ namespace Workshop2_App.controller
             } //End while
 
             file.Close();
+            Debug.Write("saveChangedBoat writeLine: ");
+            Debug.Write(writeLine);
+            Debug.WriteLine(" ");
             return writeLine;
         }
 

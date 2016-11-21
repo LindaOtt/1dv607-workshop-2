@@ -26,31 +26,30 @@ namespace Workshop2_App.controller
         {
             switch (input)
             {
-                case "boatChangeSetType":
+                case "boatChangeSetOrderNr":
                     if (Int32.TryParse(userFeedback, out number))
                     {
+                        Debug.WriteLine("Inside boatChangeSetOrderNr");
+                        Debug.Write("userFeedback: ");
+                        Debug.Write(userFeedback);
                         if (number > 0)
                         {
-                            number--;
-
-                            Boat.type boatType = ((Boat.type)number);
-
-                            changeBoat.Type = boatType;
-
+                            changeBoat.OrderNumber = number;
                         }
                     }
                     break;
-
+                case "boatChangeSetId":
+                    changeBoat.UniqueId = userFeedback;
+                    break;
                 case "boatChangeSetLength":
                     changeBoat.Length = userFeedback;
                     break;
-
+                case "boatChangeSetType":
+                    changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), Convert.ToString(int.Parse(userFeedback)-1));
+                    break;
                 case "boatDeletePick":
-                    
                     changeBoat.OrderNumber = number;
                     break;
-
-
                 default:
                     Debug.WriteLine("inputFromUser: default");
                     break;

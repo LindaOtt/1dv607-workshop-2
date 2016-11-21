@@ -1,24 +1,12 @@
 #Members
-quUUukkq7d, LOVA TESTSSON, 7878780000
+quUUukkq7d, Elsa Elving, 2510154122
 lkqIhq45df, Ylva Djurhage, 1401205281
 438Hwhhird, Erika Mandala, 4706014821
 #
 
 #Boats
-quUUukkq7d, Other, 
-438Hwhhird, Sailboat, 22
-quUUukkq7d, Motorsailer, 1
+FDFWEREWREWRW, Canoe, 10
+lkqIhq45df, Motorsailer, 3
+438Hwhhird, Canoe, 4
+789789899879878, Sailboat, 45
 ##
-
-
-
-
-
-
-
-
-
-
-
-
-

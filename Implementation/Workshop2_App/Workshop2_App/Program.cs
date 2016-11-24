@@ -21,6 +21,8 @@ namespace Workshop2_App
 
             //Getting the view
             controller.showView();
+
+            //controller.testDataController();
         }
 
     }

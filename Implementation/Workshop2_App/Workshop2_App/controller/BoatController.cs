@@ -174,9 +174,7 @@ namespace Workshop2_App.controller
             } //End while
 
             file.Close();
-            Debug.Write("saveChangedBoat writeLine: ");
-            Debug.Write(writeLine);
-            Debug.WriteLine(" ");
+            
             return writeLine;
         }
     }

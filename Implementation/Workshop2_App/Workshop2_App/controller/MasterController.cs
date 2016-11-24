@@ -66,6 +66,7 @@ namespace Workshop2_App.controller
 
         private BoatController boatController = new BoatController();
         private MemberController memberController;
+        private DataController dataController = new DataController();
 
         public views currentView = views.showFirstView;
 
@@ -73,6 +74,22 @@ namespace Workshop2_App.controller
         {
             view = sentView;
             memberController = new MemberController();
+        }
+
+        public void testDataController()
+        {
+            dataController = new DataController();
+            Member testMember = new Member();
+            testMember.Name = "Bottle";
+            testMember.UniqueId = "lkqIhq45df";
+            testMember.PersonalNumber = "8254120000";
+
+            Boat testBoat = new Boat();
+            testBoat.Type = changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), Convert.ToString(1));
+            testBoat.Length = "1000";
+            //dataController.addBoatToMemberInRegistry(testMember, testBoat);
+            //string newText = dataController.changeMemberRegistry(testMember, "change");
+            string newText = dataController.addBoatToMemberInRegistry(testMember, testBoat);
         }
 
         public void showView()
@@ -126,7 +143,7 @@ namespace Workshop2_App.controller
                             enterPNumberControl = false;
 
                             //Adding the member to the database
-                            string newText = memberController.addMember(changeMember);
+                            string newText = dataController.changeMemberRegistry(changeMember, "add");
                             
                             //Adding the new text to the registry
                             writeToFile(newText);
@@ -174,7 +191,7 @@ namespace Workshop2_App.controller
                             Debug.WriteLine(changeMember.UniqueId);
 
                             //Save member to textfile 
-                            string writeLine = memberController.replaceMember(changeMember);
+                            string writeLine = dataController.changeMemberRegistry(changeMember, "change");
 
                             writeToFile(writeLine);
                             memberControl = false;
@@ -206,7 +223,6 @@ namespace Workshop2_App.controller
                        
                     }
                     
-                    Debug.WriteLine("changeMember name: {0}", changeMember.Name);
                 }
                 else if (boatControl == true)
                 {
@@ -246,7 +262,10 @@ namespace Workshop2_App.controller
 
                             changeBoat = boatController.getBoat();
 
-                            registerBoatForUser(changeMember, changeBoat);
+                            //registerBoatForUser(changeMember, changeBoat);
+                            string newText = dataController.addBoatToMemberInRegistry(changeMember, changeBoat);
+
+                            writeToFile(newText);
 
                             currentView = views.registerBoatSaved;
 
@@ -422,25 +441,6 @@ namespace Workshop2_App.controller
         }
 
         /*
-        public void addMember(Member member)
-        {
-            // Put the entire registry into a string
-            string registryText = File.ReadAllText("..\\..\\data\\registry.txt");
-
-            //Get the first part of the registry
-            string firstPartOfRegistry = registryText.Substring(0, 8);
-
-            //Get the second part of the registry
-            string secondPartOfRegistry = registryText.Substring(9);
-
-            //Creating the new text to be added to the registry
-            string newText = firstPartOfRegistry + "@" + member.UniqueId + ", " + member.Name + ", " + member.PersonalNumber + "@" + secondPartOfRegistry;
-
-            //Adding the new text to the registry
-            writeToFile(newText);
-        }
-        */
-
         public void registerBoatForUser(Member member, Boat boat)
         {
             // Put the entire registry into a string
@@ -466,186 +466,6 @@ namespace Workshop2_App.controller
 
             //Adding the new text to the registry
             writeToFile(newText);
-        }
-        
-        /*
-        public string replaceMember(Member newMember)
-        {
-            string memberId = newMember.UniqueId;
-            string line = "";
-            string writeLine = "";
-            bool membersFound = false;
-            bool selectedMemberFound = false;
-            try
-            {   //Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader("..\\..\\data\\registry.txt"))
-                {
-                    //Read the stream line by line
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        //Find the members
-                        if (line == "#Members")
-                        {
-                            membersFound = true;
-                            writeLine = writeLine + line + "@";
-                            continue;
-                        }
-                        else if (line == "#")
-                        {
-                            membersFound = false;
-                            writeLine = writeLine + line + "@";
-                        }
-                        else if (line == "##")
-                        {
-                            membersFound = false;
-                            writeLine = writeLine + line + "@";
-                        }
-                        else { 
-
-                            //Split the string and check member Id   
-                            if (membersFound)
-                            {
-                                //Getting the properties of the member from the database (text file)
-                                string[] stringSeparators = new string[] { ", " };
-                                string[] result;
-
-                                result = line.Split(stringSeparators, StringSplitOptions.None);
-
-                                int counter = 1;
-                                foreach (string s in result)
-                                {
-                                    if (counter == 1) { 
-                                        if (s == memberId)
-                                        {
-                                            selectedMemberFound = true;
-                                        }
-                                        writeLine = writeLine + s + ", ";
-                                    }
-                                    else if (counter == 2)
-                                    {
-                                        if (selectedMemberFound)
-                                        {
-                                            writeLine = writeLine + newMember.Name + ", ";
-                                        }
-                                        else
-                                        {
-                                            writeLine = writeLine + s + ", ";
-                                        }
-                                    }
-                                    else if (counter == 3)
-                                    {
-
-                                        if (selectedMemberFound)
-                                        {
-                                            writeLine = writeLine + newMember.PersonalNumber + "@";
-                                            selectedMemberFound = false;
-                                        }
-                                        else
-                                        {
-                                            writeLine = writeLine + s + "@";
-                                        }
-                                    }
-                                    counter++;
-                                }
-                            }
-                            else
-                            {
-                                writeLine = writeLine + line + "@";
-                            }
-
-                        }
-
-                    }
-
-                }
-                return writeLine;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-                return writeLine;
-            }
-        }
-        */
-        /*
-        public string saveChangedBoat(Boat boat)
-        {
-            //Read the text file
-            string line;
-            string writeLine = "";
-            int counter = 0;
-            bool boatsFound = false;
-            string boatOrderNumberString = (boat.OrderNumber).ToString();
-            System.IO.StreamReader file =
-                new System.IO.StreamReader(@"..\..\\data\\registry.txt");
-            while ((line = file.ReadLine()) != null)
-            {
-
-                //Getting the "Boats" part
-                if (line == "#Boats")
-                {
-                    boatsFound = true;
-                    counter = 0;
-                    writeLine = writeLine + line;
-                }
-                else if (line == "##")
-                {
-                    boatsFound = false;
-                    writeLine = writeLine + "@" + line;
-                    break;
-                }
-                else
-                {
-                    if (boatsFound == true)
-                    {
-                        Debug.WriteLine(" ");
-                        Debug.Write("Boat ordernumber: ");
-                        Debug.Write(boat.OrderNumber);
-                        Debug.WriteLine(" ");
-
-                        Debug.WriteLine(" ");
-                        Debug.Write("Counter: ");
-                        Debug.Write(counter);
-                        Debug.WriteLine(" ");
-                        //This is the boat that needs to be replaced
-                        if (counter == boat.OrderNumber) {
-                            Debug.WriteLine("Counter equals boat.OrderNumber");
-                            writeLine = writeLine + "@" + boat.UniqueId + ", " + boat.Type + ", " + boat.Length;
-                        }
-                        else
-                        {
-                            writeLine = writeLine + "@" + line;
-                        }
-
-                    } //End if boatsfound
-                    else
-                    {
-                        if (line == "#Members")
-                        {
-                            writeLine = writeLine + line;
-                        }
-                        else if (line == " ")
-                        {
-                            writeLine = writeLine + "@" + "@";
-                        }
-                        else if (line == "")
-                        {
-                            writeLine = writeLine + "@" + "@";
-                        }
-                        else { 
-                            writeLine = writeLine + "@" + line;
-                        }
-                    }
-                } //End else
-                counter++;
-            } //End while
-
-            file.Close();
-            Debug.Write("saveChangedBoat writeLine: ");
-            Debug.Write(writeLine);
-            Debug.WriteLine(" ");
-            return writeLine;
         }
         */
 
@@ -784,273 +604,6 @@ namespace Workshop2_App.controller
             string id = currentTime.ToString();
             return id;
         }
-
-
+        
     }
 }
-
-
-/*
-                if (changeMemberEnterName)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.ChangeMemberEnterName;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                    }
-                    changeMemberEnterName = false;
-                    changeMemberEnterPNumber = true;
-                }
-
-                else if (changeMemberEnterPNumber)
-                {
-                    changeMember.Name = userFeedback;
-                    currentView = views.ChangeMemberEnterPNumber;
-                    changeMemberEnterPNumber = false;
-                    changeMemberSaved = true;
-                }
-
-                else if (changeMemberSaved)
-                {
-                    changeMember.PersonalNumber = userFeedback;
-                    //Save member to textfile 
-                    string writeLine = replaceMember(changeMember);
-                    
-                    writeToFile(writeLine);
-                    //Console.WriteLine(writeLine);
-
-                   
-                    currentView = views.ChangeMemberSaved;
-                    changeMemberSaved = false;
-                }
-
-                else if (lookAtMemberPick)
-                {
-                    currentView = views.LookAtMemberPick;
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.LookAtChosenMember;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        lookAtMemberPick = false;
-                    }
-                }
-
-                else if (createNewMember)
-                {
-                    changeMember.Name = userFeedback;
-                    currentView = views.CreateMemberEnterName;
-                    createNewMember = false;
-                    createMemberEnterName = true;
-                }
-
-                else if (createMemberEnterName)
-                {
-                    changeMember.PersonalNumber = userFeedback;
-                    currentView = views.CreateMemberEnterPNumber;
-                    createMemberEnterName = false;
-                    createMemberEnterPNumber = true;
-                }
-               
-                else if (createMemberEnterPNumber)
-                {
-                    //Creating a unique id for the member
-                    string uniqueId = generateId();
-                    changeMember.UniqueId = uniqueId;
-
-                    //Adding the member to the database
-                    addMember(changeMember);
-
-                    currentView = views.NewMemberCreated;
-                    createMemberEnterPNumber = false;
-                }
-
-                else if (registerNewBoat)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.registerBoatEnterType;
-                            changeMember.UniqueId = memberList.getUniqueId(Int32.Parse(userFeedback));
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        registerNewBoat = false;
-                        registerBoatEnterType = true;
-                    }
-
-                }
-
-                else if (registerBoatEnterType)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            number--;
-                            currentView = views.registerBoatEnterLength;
-
-                            Boat.type boatType = ((Boat.type)number);
-
-                            changeBoat.Type = boatType;
-
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        registerBoatEnterType = false;
-                        registerBoatEnterLength = true;
-                    }
-                }
-
-                else if (registerBoatEnterLength)
-                {
-                    changeBoat.Length = userFeedback;
-                    registerBoatEnterLength = false;
-                    registerBoatForUser(changeMember, changeBoat);
-                    currentView = views.registerBoatSaved;
-                }
-
-                else if (deleteBoat)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            currentView = views.DeleteBoatPick;
-                            changeBoat.OrderNumber = number;
-                            string newBoatsText = deleteBoatFromDb(number);
-                            writeToFile(newBoatsText);
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        deleteBoat = false;
-                    }
-                }
-
-                else if (changeBoatPick)
-                {
-                    if (Int32.TryParse(userFeedback, out number))
-                    {
-                        if (number > 0)
-                        {
-                            changeBoat.OrderNumber = number;
-                        }
-                        else
-                        {
-                            currentView = views.showFirstView;
-                        }
-                        changeBoatPick = false;
-                        changeBoatEnterId = true;
-                    }
-                }
-
-                else if (changeBoatEnterId)
-                {
-                    currentView = views.ChangeBoatEnterId;
-                    changeBoatEnterId = false;
-                    changeBoatEnterType = true;
-                    
-                }
-
-                else if (changeBoatEnterType)
-                {
-                    currentView = views.ChangeBoatEnterType;
-                    changeBoatEnterType = false;
-                    changeBoatEnterLength = true;
-                    changeBoat.UniqueId = userFeedback;
-                    
-                }
-
-                else if (changeBoatEnterLength)
-                {
-                    changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), userFeedback);
-                    currentView = views.ChangeBoatEnterLength;
-
-                    //Updating the registry text with the updated boat
-                    string saveBoatText = saveChangedBoat(changeBoat);
-
-                    //Saving the boat to the registry
-                    writeToFile(saveBoatText);
-
-                    changeBoatEnterLength = false;
-                    changeBoatSaved = true;
-                }
-
-                else if (changeBoatSaved)
-                {
-                    currentView = views.ChangeBoatSaved;
-                    changeBoatSaved = false;
-                }
-                */
-
-//Show the regular menu options
-/*
-else { 
-    if (userFeedback == "A")
-    {
-        currentView = views.ListAllCompact;
-    }
-    else if (userFeedback == "B")
-    {
-        currentView = views.ListAllVerbose;
-    }
-    else if (userFeedback == "C")
-    {
-        currentView = views.CreateNewMember;
-        createNewMember = true;
-    }
-    else if (userFeedback == "D")
-    {
-        currentView = views.ChangeMemberPick;
-        changeMemberEnterName = true;
-    }
-    else if (userFeedback == "E")
-    {
-        currentView = views.LookAtMemberPick;
-        lookAtMemberPick = true;
-    }
-    else if (userFeedback == "F")
-    {
-        currentView = views.RegisterNewBoat;
-        registerNewBoat = true;
-    }
-    else if (userFeedback == "G")
-    {
-        currentView = views.DeleteBoat;
-        deleteBoat = true;
-    }
-    else if (userFeedback == "H")
-    {
-        currentView = views.ChangeBoat;
-        changeBoatPick = true;
-    }
-    else if (userFeedback == "0")
-    {
-        currentView = views.showFirstView;
-    }
-    else
-    {
-        currentView = views.showFirstView;
-    }
-}
-*/

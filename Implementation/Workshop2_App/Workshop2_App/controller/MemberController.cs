@@ -38,9 +38,6 @@ namespace Workshop2_App.controller
                     {
                         if (number > 0)
                         {
-                            Debug.Write("The user entered the number ");
-                            Debug.Write(userFeedback);
-                            Debug.WriteLine(" ");
                             string uniqueId = this.memberList.getUniqueId(Int32.Parse(userFeedback));
                             changeMember.UniqueId = uniqueId;
                         }
@@ -63,13 +60,14 @@ namespace Workshop2_App.controller
                     }
                     break;
                 default:
-                    Debug.WriteLine("inputFromUser: default");
+                    
                     break;
             }
 
             member = changeMember;
         }
 
+        /*
         public string replaceMember(Member newMember)
         {
             string memberId = newMember.UniqueId;
@@ -170,8 +168,8 @@ namespace Workshop2_App.controller
                 return writeLine;
             }
         }
-
-
+        */
+        /*
         public string addMember(Member member)
         {
             // Put the entire registry into a string
@@ -190,6 +188,6 @@ namespace Workshop2_App.controller
 
             
         }
-
+        */
     }
 }

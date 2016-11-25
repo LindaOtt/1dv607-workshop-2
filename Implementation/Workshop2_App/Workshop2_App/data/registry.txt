@@ -1,22 +1,12 @@
 #Members
-636155958254616893, ANN-MARI CLAESSON, 1012001212
-
-636155954813010731, TEST TEST, 7878780000
-
 quUUukkq7d, Elsa Elving, 2510154122
 lkqIhq45df, Ylva Djurhage, 1401205281
 438Hwhhird, Erika Mandala, 4706014821
 #
 
 #Boats
-636155958254616893, Sailboat, 450
-quUUukkq7d, Sailboat, 12
 quUUukkq7d, Sailboat, 5
 lkqIhq45df, Motorsailer, 3
 438Hwhhird, Canoe, 4
 lkqIhq45df, Other, 6 
 ##
-
-
-
-

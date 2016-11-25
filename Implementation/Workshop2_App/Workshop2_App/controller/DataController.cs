@@ -50,8 +50,6 @@ namespace Workshop2_App.controller
                 //Building a new registry text
                 string newText = beforeMemberPart + member.UniqueId + ", " + member.Name + ", " + member.PersonalNumber + afterMemberPart;
 
-                //Console.WriteLine(newText);
-
                 return newText;
             } 
 
@@ -76,27 +74,92 @@ namespace Workshop2_App.controller
             //Boat title only
             string boatTitle = partOfRegistryBoatsInclTitle.Substring(0, endOfBoatsTitle);
 
-            //Getting the part of the registry after the "#Boats" title
-            string partOfRegistryOnlyBoats = partOfRegistryBoatsInclTitle.Substring(endOfBoatsTitle);
-
             //Getting the part before the boats
             string firstPartOfRegistry = registryText.Substring(boatIndex);
 
             //Finding the position of the start of the boats registry
-            //Get index of where the line of the chosen member ends
+            //Get index of where the line of the chosen member ends 
             int startOfBoatsIndex = firstPartOfRegistry.IndexOf(Environment.NewLine);
 
-            //Getting the boats only
+            //Getting the boats only 
             string boatRegistry = firstPartOfRegistry.Substring(startOfBoatsIndex);
 
             //Putting the boats registry together
-            //newText = firstPartOfRegistry + member.UniqueId + ", " + boat.Type + ", " + boat.Length;
             newText = partOfRegistryBeforeBoats + boatTitle + "@" + member.UniqueId + ", " + boat.Type + ", " + boat.Length + boatRegistry;
 
-            //newText = boatRegistry;
-
-            //Console.WriteLine(newText);
             return newText;
+        }
+
+        public string changeBoatRegistry(Boat boat, string action)
+        {
+            //Find index of where the boat registry starts
+            int boatIndex = registryText.IndexOf("#Boats");
+
+            string registryUpUntilBoats = registryText.Substring(0, boatIndex);
+
+            //Get the first part of the registry before "#Boats"
+            string firstPartOfRegistry = registryText.Substring(boatIndex);
+
+            //Finding the position of where the "#Boats" line ends
+            int endOfBoatsTitle = firstPartOfRegistry.IndexOf(Environment.NewLine);
+
+            //Boat title only
+            string boatTitle = firstPartOfRegistry.Substring(0, endOfBoatsTitle);
+
+            //Find the end of the line with the boat title
+            int boatTitleStopIndex = firstPartOfRegistry.IndexOf(Environment.NewLine);
+
+            //Find the boat registry part only
+            string boatRegistryOnly = firstPartOfRegistry.Substring(boatTitleStopIndex);
+
+            string[] boatList = boatRegistryOnly.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            int counter = 1;
+
+            newText = registryUpUntilBoats + boatTitle + "@";
+
+            foreach (string line in boatList)
+            {
+                    
+                if (line == "##")
+                {
+                    newText = newText + line;
+                }
+                else { 
+                    if (counter == boat.OrderNumber)
+                    {
+                        if (action == "change")
+                        {
+                            newText = newText + boat.UniqueId + ", " + boat.Type + ", " + boat.Length + "@";
+                        }
+                        else if (action == "delete")
+                        {
+                            //do nothing
+                        }
+                    }
+                    else
+                    {
+                        newText = newText + line + "@";
+                    }
+                }
+                counter++;
+            }
+
+            Console.WriteLine(newText);
+            return newText;
+        }
+
+        public void writeToFile(string message)
+        {
+            // Write the string to a file.
+            System.IO.StreamWriter file = new System.IO.StreamWriter("..\\..\\data\\registry.txt", false);
+            message = message.Replace("@", Environment.NewLine);
+            file.WriteLine(message);
+
+            file.Close();
         }
     }
 }
+
+
+    

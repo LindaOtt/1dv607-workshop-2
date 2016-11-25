@@ -85,11 +85,11 @@ namespace Workshop2_App.controller
             testMember.PersonalNumber = "8254120000";
 
             Boat testBoat = new Boat();
+            testBoat.UniqueId = "quUUukkq7d";
             testBoat.Type = changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), Convert.ToString(1));
             testBoat.Length = "1000";
-            //dataController.addBoatToMemberInRegistry(testMember, testBoat);
-            //string newText = dataController.changeMemberRegistry(testMember, "change");
-            string newText = dataController.addBoatToMemberInRegistry(testMember, testBoat);
+            testBoat.OrderNumber = 1;
+            string newText = dataController.changeBoatRegistry(testBoat, "change");
         }
 
         public void showView()
@@ -146,7 +146,7 @@ namespace Workshop2_App.controller
                             string newText = dataController.changeMemberRegistry(changeMember, "add");
                             
                             //Adding the new text to the registry
-                            writeToFile(newText);
+                            dataController.writeToFile(newText);
 
                             memberControl = false;
                             createControl = false;
@@ -193,7 +193,7 @@ namespace Workshop2_App.controller
                             //Save member to textfile 
                             string writeLine = dataController.changeMemberRegistry(changeMember, "change");
 
-                            writeToFile(writeLine);
+                            dataController.writeToFile(writeLine);
                             memberControl = false;
                             changeControl = false;
 
@@ -265,7 +265,7 @@ namespace Workshop2_App.controller
                             //registerBoatForUser(changeMember, changeBoat);
                             string newText = dataController.addBoatToMemberInRegistry(changeMember, changeBoat);
 
-                            writeToFile(newText);
+                            dataController.writeToFile(newText);
 
                             currentView = views.registerBoatSaved;
 
@@ -291,9 +291,10 @@ namespace Workshop2_App.controller
                                     changeBoat = boatController.getBoat();
 
                                     changeBoat.OrderNumber = number;
-                                    string newBoatsText = boatController.deleteBoatFromDb(number);
+                                    //string newBoatsText = boatController.deleteBoatFromDb(number);
+                                    string newBoatsText = dataController.changeBoatRegistry(changeBoat, "delete");
 
-                                    writeToFile(newBoatsText);
+                                    dataController.writeToFile(newBoatsText);
                                     currentView = views.DeleteBoatSave;
                                 }
                             }
@@ -357,10 +358,11 @@ namespace Workshop2_App.controller
 
                             //Saving the boat
                             //Updating the registry text with the updated boat
-                            string saveBoatText = boatController.saveChangedBoat(changeBoat);
+
+                            string saveBoatText = dataController.changeBoatRegistry(changeBoat, "change");
 
                             //Saving the boat to the registry
-                            writeToFile(saveBoatText);
+                            dataController.writeToFile(saveBoatText);
 
                             currentView = views.ChangeBoatSaved;
 
@@ -440,34 +442,6 @@ namespace Workshop2_App.controller
 
         }
 
-        /*
-        public void registerBoatForUser(Member member, Boat boat)
-        {
-            // Put the entire registry into a string
-            string registryText = File.ReadAllText("..\\..\\data\\registry.txt");
-
-            //Find the boats part in the registry
-            int boatsIndex = registryText.IndexOf("#Boats");
-
-            //Get the first part of the registry
-            string firstPartOfRegistry = registryText.Substring(0, boatsIndex);
-
-            //Get the second part of the registry
-            string secondPartOfRegistry = registryText.Substring(boatsIndex);
-
-            //Get the third part of the registry
-            string thirdPartOfRegistry = secondPartOfRegistry.Substring(6);
-
-            //Get the second part of the registry
-            secondPartOfRegistry = secondPartOfRegistry.Substring(0,6);
-
-            //Creating the new text to be added to the registry
-            string newText = firstPartOfRegistry + secondPartOfRegistry + "@" + member.UniqueId + ", " + boat.Type + ", " + boat.Length  + thirdPartOfRegistry;
-
-            //Adding the new text to the registry
-            writeToFile(newText);
-        }
-        */
 
         public string getInfoFromDb()
         {
@@ -586,16 +560,6 @@ namespace Workshop2_App.controller
                 }
             }
 
-        }
-
-        public void writeToFile(string message)
-        {
-            // Write the string to a file.
-            System.IO.StreamWriter file = new System.IO.StreamWriter("..\\..\\data\\registry.txt", false);
-            message = message.Replace("@", Environment.NewLine);
-            file.WriteLine(message);
-
-            file.Close();
         }
 
         public string generateId()

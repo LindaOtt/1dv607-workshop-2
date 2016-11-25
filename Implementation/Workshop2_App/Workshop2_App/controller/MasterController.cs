@@ -76,22 +76,6 @@ namespace Workshop2_App.controller
             memberController = new MemberController();
         }
 
-        public void testDataController()
-        {
-            dataController = new DataController();
-            Member testMember = new Member();
-            testMember.Name = "Bottle";
-            testMember.UniqueId = "lkqIhq45df";
-            testMember.PersonalNumber = "8254120000";
-
-            Boat testBoat = new Boat();
-            testBoat.UniqueId = "quUUukkq7d";
-            testBoat.Type = changeBoat.Type = (Boat.type)Enum.Parse(typeof(Boat.type), Convert.ToString(1));
-            testBoat.Length = "1000";
-            testBoat.OrderNumber = 1;
-            string newText = dataController.changeBoatRegistry(testBoat, "change");
-        }
-
         public void showView()
         {
 
@@ -172,7 +156,6 @@ namespace Workshop2_App.controller
                         {
                             input = "memberChangeName";
                             memberController.setMemberFromInput(input, userFeedback, changeMember);
-                            //changeMember = memberController.getMember();
                             enterNameControl = false;
                             enterPNumberControl = true;
                             currentView = views.ChangeMemberEnterPNumber;
@@ -261,8 +244,7 @@ namespace Workshop2_App.controller
                             boatController.setBoatFromInput(input, userFeedback, changeBoat);
 
                             changeBoat = boatController.getBoat();
-
-                            //registerBoatForUser(changeMember, changeBoat);
+                            
                             string newText = dataController.addBoatToMemberInRegistry(changeMember, changeBoat);
 
                             dataController.writeToFile(newText);
@@ -291,7 +273,7 @@ namespace Workshop2_App.controller
                                     changeBoat = boatController.getBoat();
 
                                     changeBoat.OrderNumber = number;
-                                    //string newBoatsText = boatController.deleteBoatFromDb(number);
+                                    
                                     string newBoatsText = dataController.changeBoatRegistry(changeBoat, "delete");
 
                                     dataController.writeToFile(newBoatsText);
@@ -440,27 +422,6 @@ namespace Workshop2_App.controller
                 
             } while (userFeedback != "0");
 
-        }
-
-
-        public string getInfoFromDb()
-        {
-            string line = "";
-            try
-            {   // Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader("..\\..\\registry.txt"))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    line = line + sr.ReadToEnd();
-                    return line;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-                return line;
-            }
         }
 
         public void activateView(bool showByeMsg)

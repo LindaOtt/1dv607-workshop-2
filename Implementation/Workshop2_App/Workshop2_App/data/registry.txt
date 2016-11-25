@@ -5,6 +5,7 @@ lkqIhq45df, Ylva Djurhage, 1401205281
 #
 
 #Boats
+45456, Sailboat, 45
 quUUukkq7d, Sailboat, 5
 lkqIhq45df, Motorsailer, 3
 438Hwhhird, Canoe, 4

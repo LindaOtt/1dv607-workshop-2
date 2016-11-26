@@ -7,7 +7,7 @@ namespace Workshop2_App.controller
 {
     class MemberController
     {
-        int number;
+        private int number;
         private Member member;
         private MemberList memberList = new MemberList();
 
@@ -64,6 +64,13 @@ namespace Workshop2_App.controller
 
             member = changeMember;
         }
-        
+
+        public string generateId()
+        {
+            long currentTime = DateTime.Now.Ticks;
+            string id = currentTime.ToString();
+            return id;
+        }
+
     }
 }

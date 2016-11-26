@@ -8,7 +8,7 @@ namespace Workshop2_App.controller
     class BoatController
     {
 
-        int number;
+        private int number;
         private Boat boat;
         private BoatList boatList = new BoatList();
 

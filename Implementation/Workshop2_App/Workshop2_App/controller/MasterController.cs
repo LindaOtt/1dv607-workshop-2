@@ -121,7 +121,7 @@ namespace Workshop2_App.controller
                             input = "memberCreateSave";
 
                             //Creating a unique id for the member
-                            string uniqueId = generateId();
+                            string uniqueId = memberController.generateId();
                             memberController.setMemberFromInput(input, uniqueId, changeMember);
 
                             enterPNumberControl = false;
@@ -523,12 +523,6 @@ namespace Workshop2_App.controller
 
         }
 
-        public string generateId()
-        {
-            long currentTime = DateTime.Now.Ticks;
-            string id = currentTime.ToString();
-            return id;
-        }
         
     }
 }
